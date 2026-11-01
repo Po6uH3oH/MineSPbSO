@@ -1,0 +1,6 @@
+# This UDP endpoint is independent of the TCP TLS gateway.
+port=24454
+bind_address=*
+# Set to the real public DNS name and UDP port, otherwise clients connecting
+# through the launcher's loopback tunnel will try to send voice to localhost.
+voice_host=REPLACE_WITH_REAL_PUBLIC_VOICE_HOST:24454

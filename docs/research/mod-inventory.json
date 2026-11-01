@@ -1,0 +1,1283 @@
+[
+  {
+    "name": "Name",
+    "version": "Version",
+    "id": "Mod Id",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Additional Lanterns",
+    "version": "1.1.2",
+    "id": "additionallanterns",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "AntiXray",
+    "version": "1.4.8",
+    "id": "antixray",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Apollib",
+    "version": "1.2.0",
+    "id": "apollib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "AppleSkin",
+    "version": "3.0.9+mc1.21",
+    "id": "appleskin",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Architectury",
+    "version": "13.0.11",
+    "id": "architectury",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Ars Nouveau",
+    "version": "5.13.3",
+    "id": "ars_nouveau",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Ars Nouveau's Flavors & Delight",
+    "version": "2.2.5",
+    "id": "arsdelight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Artifacts",
+    "version": "13.2.5",
+    "id": "artifacts",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Attack Through Grass",
+    "version": "2.0.3",
+    "id": "atg",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "AttributeFix",
+    "version": "21.1.3",
+    "id": "attributefix",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Auroral",
+    "version": "1.21.1-1.1.5",
+    "id": "auroral",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Bad Packets",
+    "version": "0.8.2",
+    "id": "badpackets",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "BadOptimizations",
+    "version": "2.4.1",
+    "id": "badoptimizations",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "BaguetteLib",
+    "version": "2.0.7",
+    "id": "baguettelib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Balm",
+    "version": "21.0.66",
+    "id": "balm",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Battle Music",
+    "version": "1.2.2",
+    "id": "battlemusic",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "BCLib",
+    "version": "21.0.28",
+    "id": "bclib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Beautify",
+    "version": "2.0.2",
+    "id": "beautify",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Bedspreads",
+    "version": "7.0.0+1.21.1",
+    "id": "bedspreads",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Bendy lib",
+    "version": "5.1",
+    "id": "bendylib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Better End",
+    "version": "21.0.39",
+    "id": "betterend",
+    "status": "not-approved",
+    "evidence": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "name": "Better Nether",
+    "version": "21.0.30",
+    "id": "betternether",
+    "status": "not-approved",
+    "evidence": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "name": "Better Ping Display",
+    "version": "1.1",
+    "id": "betterpingdisplay",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "BlueMap",
+    "version": "5.7",
+    "id": "bluemap",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Blueprint",
+    "version": "8.2.0",
+    "id": "blueprint",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Bookshelf",
+    "version": "21.1.81",
+    "id": "bookshelf",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Bountiful",
+    "version": "8.0.0-beta.2",
+    "id": "bountiful",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Chalk",
+    "version": "2.0.2",
+    "id": "chalk",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Chat Heads",
+    "version": "0.15.7",
+    "id": "chat_heads",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Chat Tools",
+    "version": "2.4.5",
+    "id": "chattools",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Cloth Config v15 API",
+    "version": "15.0.140",
+    "id": "cloth_config",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "CodecUI",
+    "version": "1.21.1-1.4.7",
+    "id": "codecui",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Collective",
+    "version": "8.71",
+    "id": "collective",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Connectivity Mod",
+    "version": "7.7",
+    "id": "connectivity",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "CorgiLib",
+    "version": "5.0.0.10",
+    "id": "corgilib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Corpse",
+    "version": "1.21.1-1.1.22",
+    "id": "corpse",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Corpse Curios Compatibility",
+    "version": "4.2.0",
+    "id": "corpsecurioscompat",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "CosmeticArmours",
+    "version": "1.6.0.0",
+    "id": "cosmeticarmoursmod",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "CrashExploitFixer",
+    "version": "2.0.0",
+    "id": "crashexploitfixer",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Cristel Lib",
+    "version": "3.1.7",
+    "id": "cristellib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Critters and Companions",
+    "version": "2.7.0",
+    "id": "crittersandcompanions",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Cubes Without Borders",
+    "version": "5.0.0+1.21.0.neoforge",
+    "id": "cwb",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Cupboard mod",
+    "version": "4.2",
+    "id": "cupboard",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Curios API",
+    "version": "9.5.1+1.21.1",
+    "id": "curios",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "CustomSkinLoader",
+    "version": "15.1",
+    "id": "customskinloader",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "Delight Lib",
+    "version": "26.05.18-1.21-neoforge",
+    "id": "delightlib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "dragonfight mod",
+    "version": "5.0",
+    "id": "dragonfight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns",
+    "version": "1-v4.4.4",
+    "id": "mr_dungeons_andtaverns",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns Ancient City Overhaul",
+    "version": "1-v2",
+    "id": "mr_dungeons_andtavernsancientcityoverhaul",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns Desert Temple Replacement",
+    "version": "1-v1.2",
+    "id": "mr_dungeons_andtavernsdeserttemplereplacement",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns Nether Fortress Overhaul",
+    "version": "2.5.1",
+    "id": "mr_dungeons_andtavernsnetherfortressoverhaul",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns Stronghold Overhaul",
+    "version": "1-v2.1.f",
+    "id": "mr_dungeons_andtavernsstrongholdoverhaul",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns Swamp Hut Overhaul",
+    "version": "1-v2",
+    "id": "mr_dungeons_andtavernsswamphutoverhaul",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Dungeons and Taverns Woodland Mansion Replacement",
+    "version": "1-v1.2",
+    "id": "mr_dungeons_andtavernswoodlandmansionreplacement",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Durability Tooltip",
+    "version": "1.2.0",
+    "id": "durabilitytooltip",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Emotecraft",
+    "version": "2.4.12",
+    "id": "emotecraft",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "End Remastered",
+    "version": "6.3.0",
+    "id": "endrem",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Enhanced Boss Bars",
+    "version": "1.1.2",
+    "id": "enhanced_boss_bars",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "EntityCulling",
+    "version": "1.11.3",
+    "id": "entityculling",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Etched",
+    "version": "5.1.0",
+    "id": "etched",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "ExpandAbility",
+    "version": "12.0.0",
+    "id": "expandability",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Exposure",
+    "version": "1.9.19",
+    "id": "exposure",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Exposure Catalog",
+    "version": "1.1.2",
+    "id": "exposure_catalog",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Exposure: Expanded",
+    "version": "1.0.1",
+    "id": "exposure_expanded",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Fancy Tab Sections",
+    "version": "6.2.1-NEOFORGE-1.21.1",
+    "id": "fancytabsections",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Farmer's Delight",
+    "version": "1.3.4",
+    "id": "farmersdelight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Fast IP Ping",
+    "version": "1.0.12",
+    "id": "fastipping",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "FDLib",
+    "version": "1.0.9",
+    "id": "fdlib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Ferrite Core",
+    "version": "7.0.3",
+    "id": "ferritecore",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "FlickerFix",
+    "version": "4.0.1",
+    "id": "flickerfix",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Forgified Fabric API Base",
+    "version": "0.4.42+d1308ded19",
+    "id": "fabric_api_base",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Forgified Fabric BlockView API (v2)",
+    "version": "1.0.10+9afaaf8c19",
+    "id": "fabric_block_view_api_v2",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Forgified Fabric Renderer API (v1)",
+    "version": "3.4.1+9125b6dc19",
+    "id": "fabric_renderer_api_v1",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Forgified Fabric Rendering Data Attachment (v1)",
+    "version": "0.3.48+73761d2e19",
+    "id": "fabric_rendering_data_attachment_v1",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "FTB Chunks",
+    "version": "2101.1.22",
+    "id": "ftbchunks",
+    "status": "not-approved",
+    "evidence": "unresolved"
+  },
+  {
+    "name": "FTB Library",
+    "version": "2101.1.37",
+    "id": "ftblibrary",
+    "status": "not-approved",
+    "evidence": "unresolved"
+  },
+  {
+    "name": "FTB Quests",
+    "version": "2101.1.36",
+    "id": "ftbquests",
+    "status": "not-approved",
+    "evidence": "unresolved"
+  },
+  {
+    "name": "FTB Teams",
+    "version": "2101.1.11",
+    "id": "ftbteams",
+    "status": "not-approved",
+    "evidence": "unresolved"
+  },
+  {
+    "name": "FTB XMod Compat",
+    "version": "21.1.12",
+    "id": "ftbxmodcompat",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Galosphere",
+    "version": "1.5.5",
+    "id": "galosphere",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "GeckoLib 4",
+    "version": "4.9.3",
+    "id": "geckolib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Geophilic",
+    "version": "3.7",
+    "id": "geophilic",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Gpu memory leak fix",
+    "version": "1.8",
+    "id": "gpumemleakfix",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Hellish Trials",
+    "version": "1.0.5",
+    "id": "hellish_trials",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Hide Item Frame",
+    "version": "1.5.2-neoforge+1.21",
+    "id": "hide_item_frame",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "HopoBetterMineshaft",
+    "version": "1.3.0",
+    "id": "hopo",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "HopoBetterRuinedPortals",
+    "version": "1.4.4",
+    "id": "hoporp",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "HopoBetterUnderwaterRuins",
+    "version": "1.2.1",
+    "id": "hopour",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "ImmediatelyFast",
+    "version": "1.6.15+1.21.1",
+    "id": "immediatelyfast",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Immersive Melodies",
+    "version": "0.8.2+1.21.1",
+    "id": "immersive_melodies",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "Infiniverse",
+    "version": "2.0.1.0",
+    "id": "infiniverse",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Iris",
+    "version": "1.8.14-beta.1+mc1.21.1",
+    "id": "iris",
+    "status": "not-approved",
+    "evidence": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "name": "Joy of Painting",
+    "version": "1.21.1-2.0.1",
+    "id": "xercapaint",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "Just Enough Breeding",
+    "version": "3.3.1",
+    "id": "justenoughbreeding",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Just Enough Items",
+    "version": "19.70.0.468",
+    "id": "jei",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Just Enough Resources",
+    "version": "1.6.0.57",
+    "id": "jeresources",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Kambrik",
+    "version": "8.0.0-beta.2",
+    "id": "kambrik",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Kotlin For Forge",
+    "version": "5.12.0",
+    "id": "kotlinforforge",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "KumaAPI",
+    "version": "21.0.8",
+    "id": "kuma_api",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "L2Core",
+    "version": "3.0.8+16",
+    "id": "l2core",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "LambDynamicLights (API)",
+    "version": "4.5.1+1.21.1",
+    "id": "lambdynlights_api",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Leaves Be Gone",
+    "version": "21.1.1",
+    "id": "leavesbegone",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Lithium",
+    "version": "0.15.4+mc1.21.1",
+    "id": "lithium",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Lithostitched",
+    "version": "1.8.1",
+    "id": "lithostitched",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Load My F***ing Tags",
+    "version": "1.1.1+1.21.9",
+    "id": "lmft",
+    "status": "not-approved",
+    "evidence": "unresolved"
+  },
+  {
+    "name": "Longer Chat History",
+    "version": "1.7",
+    "id": "longerchathistory",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Lootr",
+    "version": "1.21.1-1.11.38.127",
+    "id": "lootr",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Luki's Crazy Chambers",
+    "version": "1.0.3",
+    "id": "mr_lukis_crazychambers",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Macaw's Lights and Lamps",
+    "version": "1.1.5",
+    "id": "mcwlights",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Measurements",
+    "version": "3.0.3",
+    "id": "measurements",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "MezzConfig",
+    "version": "0.6.10",
+    "id": "mezz_config",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Minecraft",
+    "version": "1.21.1",
+    "id": "minecraft",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "ModernFix",
+    "version": "5.27.27+mc1.21.1",
+    "id": "modernfix",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Moonlight Lib",
+    "version": "1.21.1-3.7.2",
+    "id": "moonlight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "More Armor Trims",
+    "version": "1.5.4n-1.21.1",
+    "id": "more_armor_trims",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "More Chest Variants",
+    "version": "1.5.15",
+    "id": "lolmcv",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "More Delight",
+    "version": "26.05.20a-1.21-neoforge",
+    "id": "moredelight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Mortaar",
+    "version": "1.5.4",
+    "id": "mortaar",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Mouse Tweaks",
+    "version": "2.26.1",
+    "id": "mousetweaks",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Moyai",
+    "version": "1.21-2.1.7",
+    "id": "moyai",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "NaNny",
+    "version": "1.0.1",
+    "id": "nanny",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "NeoForge",
+    "version": "21.1.256",
+    "id": "neoforge",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "NetherPortalFix",
+    "version": "21.1.1",
+    "id": "netherportalfix",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "No Chat Reports",
+    "version": "1.21.1-v2.9.1",
+    "id": "nochatreports",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "No Chat Restrictions",
+    "version": "1.21.11-v1.0.3",
+    "id": "nochatrestrictions",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "Not Enough Recipe Book",
+    "version": "0.4.3",
+    "id": "nerb",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Nuggets",
+    "version": "1.1.0.48",
+    "id": "nuggets",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "OctoLib",
+    "version": "0.6.2",
+    "id": "octolib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Patchouli",
+    "version": "1.21.1-93-NEOFORGE",
+    "id": "patchouli",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Percale",
+    "version": "1.0.0-beta.1",
+    "id": "percale",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Personality",
+    "version": "5.0.2",
+    "id": "personality",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Philip's Ruins",
+    "version": "2.0",
+    "id": "philipsruins",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Placebo",
+    "version": "9.9.4",
+    "id": "placebo",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Player Animator",
+    "version": "2.0.1+1.21.1",
+    "id": "playeranimator",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Plushie Buddies",
+    "version": "1.0.1-neofroge-1.21.1",
+    "id": "plushie_buddies",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "PrickleMC",
+    "version": "21.1.11",
+    "id": "prickle",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Puzzles Lib",
+    "version": "21.1.66",
+    "id": "puzzleslib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Qliphoth Awakening",
+    "version": "3.2",
+    "id": "fdbosses",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Quad",
+    "version": "1.2.9",
+    "id": "quad",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Raise Sound Limit Simplified",
+    "version": "1.1.17",
+    "id": "rsls",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Reliable Recipes",
+    "version": "3.8.2+1.21.1",
+    "id": "reliable_recipes",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Reliable Remover",
+    "version": "3.8.3+1.21.1",
+    "id": "reliable_remover",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Resourceful Lib",
+    "version": "3.0.12",
+    "id": "resourcefullib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Rustic Delight",
+    "version": "1.7.1",
+    "id": "rusticdelight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Scribble",
+    "version": "1.5.1",
+    "id": "scribble",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Server Sleep",
+    "version": "1-datapack2",
+    "id": "mr_serversleep",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "ServerCore",
+    "version": "1.5.19+1.21.1",
+    "id": "servercore",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Simple Voice Chat",
+    "version": "1.21.1-2.6.27",
+    "id": "voicechat",
+    "status": "not-approved",
+    "evidence": "Catalogue matches Minecraft/loader; inspect JAR dependencies next"
+  },
+  {
+    "name": "Smarter Farmers",
+    "version": "1.21-2.2.4",
+    "id": "smarterfarmers",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Sodium",
+    "version": "0.8.13+mc1.21.1",
+    "id": "sodium",
+    "status": "not-approved",
+    "evidence": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "name": "Sound Physics Remastered",
+    "version": "1.21.1-1.5.2",
+    "id": "sound_physics_remastered",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "spark",
+    "version": "1.10.124",
+    "id": "spark",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Starcatcher",
+    "version": "3.3.10-NEOFORGE-1.21.1",
+    "id": "starcatcher",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Starcatcher's Delight",
+    "version": "3.2-NEOFORGE-1.21.1",
+    "id": "starcatcher_delight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Stoneworks",
+    "version": "21.1.0",
+    "id": "stoneworks",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Storage Delight",
+    "version": "26.09.17-1.21-neoforge",
+    "id": "storagedelight",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Storage Drawers",
+    "version": "13.11.4",
+    "id": "storagedrawers",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Structure Essentials mod",
+    "version": "5.0",
+    "id": "structureessentials",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Structurify",
+    "version": "2.0.43",
+    "id": "structurify",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Sunken Spires",
+    "version": "1.0",
+    "id": "mr_sunken_spires",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "SuperMartijn642's Config Library",
+    "version": "1.1.8",
+    "id": "supermartijn642configlib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "SuperMartijn642's Core Lib",
+    "version": "1.1.26",
+    "id": "supermartijn642corelib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "The Undergarden",
+    "version": "0.9.6",
+    "id": "undergarden",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Tiny Multiblock Lib",
+    "version": "4.0.1",
+    "id": "tinymultiblocklib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Toast Control",
+    "version": "9.0.1",
+    "id": "toastcontrol",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Too Fast",
+    "version": "0.4.3.5",
+    "id": "toofast",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Tool Trims",
+    "version": "3.0.7",
+    "id": "tool_trims",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "TRansition",
+    "version": "1.0.26",
+    "id": "transition",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Trek",
+    "version": "1-B0.6.2",
+    "id": "mr_trek",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "TRender",
+    "version": "1.0.17",
+    "id": "trender",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Unusual Fish Mod",
+    "version": "1.21.1-1.1.13",
+    "id": "unusualfishmod",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Variants&Ventures",
+    "version": "1.0.28",
+    "id": "variantsandventures",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Villager Names",
+    "version": "8.9",
+    "id": "villagernames",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Villages&Pillages",
+    "version": "2.0.0",
+    "id": "villagesandpillages",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "wd's Selling Bin",
+    "version": "1.6-NEOFORGE-1.21.1",
+    "id": "selling_bin",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "wd's Tooltips Library",
+    "version": "2.3.2-NEOFORGE-1.21.1",
+    "id": "libtooltips",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "wd's Utils",
+    "version": "2.0-NEOFORGE-1.21.1",
+    "id": "wdutils",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Wits",
+    "version": "1.3.1",
+    "id": "wits",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "WorldWeaver",
+    "version": "21.0.30",
+    "id": "wover",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "WunderLib",
+    "version": "21.0.11",
+    "id": "wunderlib",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "Yeetus Experimentus",
+    "version": "87.0.0",
+    "id": "yeetusexperimentus",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  },
+  {
+    "name": "YetAnotherConfigLib",
+    "version": "3.8.2+1.21.1-neoforge",
+    "id": "yet_another_config_lib_v3",
+    "status": "not-approved",
+    "evidence": "Only supplied log; exact JAR, dependencies, side and redistribution remain unverified"
+  }
+]

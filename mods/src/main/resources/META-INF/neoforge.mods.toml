@@ -1,0 +1,20 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+[[mods]]
+modId="community_gate"
+version="0.1.0"
+displayName="Community Gate"
+description="Проверка аккаунта сообщества до входа в мир"
+[[dependencies.community_gate]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.256]"
+ordering="NONE"
+side="BOTH"
+[[dependencies.community_gate]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"

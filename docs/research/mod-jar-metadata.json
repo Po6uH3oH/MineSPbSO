@@ -1,0 +1,574 @@
+[
+  {
+    "file": "CustomSkinLoader_Universal-15.1.jar",
+    "sha256": "c8769a38b3cc1da2a7b2f5827d1a53a24cd1ef6d0784b1eb545569f5882a2ffb",
+    "loader": "neoforge-bootstrap/universal",
+    "metadata": {
+      "schemaVersion": 1,
+      "id": "customskinloader-bootstrap",
+      "version": "15.1",
+      "name": "CustomSkinLoader Bootstrap",
+      "description": "Custom Skin Loader for Minecraft",
+      "authors": [
+        "xfl03",
+        "JLChnToZ",
+        "ZekerZhayard"
+      ],
+      "contact": {
+        "homepage": "https://github.com/xfl03/MCCustomSkinLoader",
+        "issues": "https://github.com/xfl03/MCCustomSkinLoader/issues",
+        "sources": "https://github.com/xfl03/MCCustomSkinLoader"
+      },
+      "license": "GPL-3.0-only",
+      "environment": "client",
+      "mixins": [
+        "customskinloader.bootstrap.fabric.v1.mixins.json"
+      ]
+    },
+    "embedded": [
+      "META-INF/jar-jar/CustomSkinLoader-Common.jar"
+    ],
+    "services": [
+      "META-INF/services/customskinloader.bootstrap.transformer.TransformationRuleProvider",
+      "META-INF/services/cpw.mods.modlauncher.api.ITransformationService",
+      "META-INF/services/net.minecraftforge.fml.loading.moddiscovery.IModLocator",
+      "META-INF/services/net.minecraftforge.forgespi.locating.IModLocator",
+      "META-INF/services/net.neoforged.neoforgespi.locating.IModLocator",
+      "META-INF/services/net.neoforged.neoforgespi.locating.IModFileCandidateLocator",
+      "META-INF/services/net.neoforged.neoforgespi.transformation.ClassProcessorProvider"
+    ],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "emotecraft-for-MC1.21.1-2.4.12-neoforge.jar",
+    "sha256": "8cff63e900acd55bb39d41978cc2a70a974e326e2038c30ff20ccfde4c953a43",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "*",
+      "license": "GPL3",
+      "issueTrackerURL": "https://github.com/KosmX/emotes/issues",
+      "mods": [
+        {
+          "modId": "emotecraft",
+          "version": "2.4.12",
+          "displayName": "Emotecraft",
+          "updateJSONURL": "https://api.modrinth.com/updates/emotecraft/forge_updates.json?neoforge=include",
+          "displayURL": "https://kosmx.gitbook.io/emotecraft/",
+          "logoFile": "emotecraft_mod_logo.png",
+          "authors": "KosmX, dima_dencep",
+          "description": "Play emotes in Minecraft\nOpen the menu to setup your fast-choose wheel\n\nYou can add custom emotes, and you can play these even if nobody else has them\n\nSpecial thanks:\nKale Ko for creating emotes and help in the UI design\nOrsond for inspiring me and providing CollarMC\nArchitectury for the Forge build tools"
+        }
+      ],
+      "mixins": [
+        {
+          "config": "emotecraft-arch.mixins.json"
+        }
+      ],
+      "dependencies": {
+        "emotecraft": [
+          {
+            "modId": "playeranimator",
+            "mandatory": true,
+            "type": "required",
+            "versionRange": "[2.0.0,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [
+      "META-INF/jars/bendy-lib-forge-5.1.jar",
+      "META-INF/jars/player-animation-lib-forge-2.0.1+1.21.1.jar"
+    ],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "etched-5.1.0.jar",
+    "sha256": "be4fa9704e3621acd55e738d7dd4d9bb229c13d4b82482044f8c3cba58e1f516",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[1,)",
+      "license": "GPLv3",
+      "issueTrackerURL": "https://github.com/jacksonhardaway/etched/issues",
+      "mods": [
+        {
+          "modId": "etched",
+          "version": "5.1.0",
+          "displayName": "Etched",
+          "logoFile": "etched.logo.png",
+          "authors": "Ocelot, Jackson, Farcr (Art), AstraZoey (Sound Design)",
+          "description": "A new form of entertainment."
+        }
+      ],
+      "mixins": [
+        {
+          "config": "etched.mixins.json"
+        }
+      ],
+      "dependencies": {
+        "etched": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.0,)"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1]"
+          },
+          {
+            "modId": "sophisticatedcore",
+            "type": "optional",
+            "versionRange": "[1.4.2,)",
+            "ordering": "BEFORE"
+          }
+        ]
+      }
+    },
+    "embedded": [
+      "META-INF/jarjar/jlayer-1.0.3.jar"
+    ],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "ftb-chunks-neoforge-2101.1.22.jar",
+    "sha256": "4ba1b3352184fa7f6e2aa4bca76edd074867697d62344dfa50dcccdb4dab5217",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[4,)",
+      "issueTrackerURL": "https://go.ftb.team/support-mod-issues",
+      "license": "All Rights Reserved",
+      "mixins": [
+        {
+          "config": "ftbchunks-common.mixins.json"
+        }
+      ],
+      "mods": [
+        {
+          "modId": "ftbchunks",
+          "version": "2101.1.22",
+          "displayName": "FTB Chunks",
+          "authors": "FTB Team",
+          "description": "Claim chunks to protect your base from griefers!\n",
+          "license": "All Rights Reserved"
+        }
+      ],
+      "dependencies": {
+        "ftbchunks": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.0,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "architectury",
+            "type": "required",
+            "versionRange": "[13.0.8,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftblibrary",
+            "type": "required",
+            "versionRange": "[2101.1.34,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftbteams",
+            "type": "required",
+            "versionRange": "[2101.1.9,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftbbackups3",
+            "type": "optional",
+            "versionRange": "[21.1.3,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "ftb-quests-neoforge-2101.1.36.jar",
+    "sha256": "6a39982c4b3afc00b1e788041a4f0d394e1659e3b3a6e5d078cd790bc36d0018",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[4,)",
+      "issueTrackerURL": "https://github.com/FTBTeam/FTB-Mods-Issues/issues",
+      "license": "All Rights Reserved",
+      "mixins": [
+        {
+          "config": "ftbquests-common.mixins.json"
+        }
+      ],
+      "mods": [
+        {
+          "modId": "ftbquests",
+          "version": "2101.1.36",
+          "displayName": "FTB Quests",
+          "authors": "FTB Team",
+          "description": "Lets you easily create and play with quests\n"
+        }
+      ],
+      "dependencies": {
+        "ftbquests": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.0,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "architectury",
+            "type": "required",
+            "versionRange": "[13.0.8,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftblibrary",
+            "type": "required",
+            "versionRange": "[2101.1.36,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftbteams",
+            "type": "required",
+            "versionRange": "[2101.1.9,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftbxmodcompat",
+            "type": "optional",
+            "versionRange": "[21.1.7,)",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "ftb-teams-neoforge-2101.1.11.jar",
+    "sha256": "e6bcd670493624e6906df872a9c6af4a33fe6405cac57a32c59cd4cd5838c655",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[4,)",
+      "issueTrackerURL": "https://go.ftb.team/support-mod-issues",
+      "license": "All Rights Reserved",
+      "mods": [
+        {
+          "modId": "ftbteams",
+          "version": "2101.1.11",
+          "displayName": "FTB Teams",
+          "authors": "FTB Team",
+          "description": "FTB Teams adds ability to create your own teams that can be used for quests etc.\n"
+        }
+      ],
+      "dependencies": {
+        "ftbteams": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.0,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "architectury",
+            "type": "required",
+            "versionRange": "[13.0.8,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ftblibrary",
+            "type": "required",
+            "versionRange": "[2101.1.30,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "immersive_melodies-neoforge-0.8.2+1.21.1.jar",
+    "sha256": "345a54e22143ef3fa18c599a2972febe8916b5f522785dde04db688a4491792d",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[1,)",
+      "license": "GPL-3.0",
+      "issueTrackerURL": "https://github.com/Luke100000/ImmersiveMelodies/issues",
+      "mixins": [
+        {
+          "config": "immersive_melodies.mixins.json"
+        }
+      ],
+      "mods": [
+        {
+          "modId": "immersive_melodies",
+          "version": "0.8.2+1.21.1",
+          "displayName": "Immersive Melodies",
+          "displayURL": "https://conczin.net/",
+          "logoFile": "icon.png",
+          "credits": "",
+          "authors": "Luke100000",
+          "description": "Play custom melodies on various instruments and annoy your friends!"
+        }
+      ],
+      "dependencies": {
+        "immersive_melodies": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[1,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21, 1.22)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "ferritecore",
+            "type": "optional",
+            "versionRange": "*",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "NoChatRestrictions-NeoForge-MC1.21.11-v1.0.3.jar",
+    "sha256": "b96f89e0d2180f1a1ff34e98cc40c2e3df6f93ad141aa570381096a3ee3d84e5",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[1,)",
+      "license": "WTFPL",
+      "issueTrackerURL": "https://github.com/Aizistral-Studios/No-Chat-Restrictions/issues",
+      "logoFile": "ncr_logo.png",
+      "mods": [
+        {
+          "modId": "nochatrestrictions",
+          "version": "1.21.11-v1.0.3",
+          "displayName": "No Chat Restrictions",
+          "displayURL": "https://modrinth.com/project/no-chat-restrictions",
+          "authors": "Aizistral",
+          "description": "A mod dedicated to removing restrictions around the use of multiplayer features, including in-game chat."
+        }
+      ],
+      "dependencies": {
+        "nochatrestrictions": [
+          {
+            "modId": "neoforge",
+            "mandatory": true,
+            "versionRange": "[20.2,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "mandatory": true,
+            "versionRange": "[1.21,1.21.11]",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      },
+      "mixins": [
+        {
+          "config": "nochatrestrictions.mixins.json"
+        }
+      ]
+    },
+    "embedded": [],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "voicechat-neoforge-1.21.1-2.6.27.jar",
+    "sha256": "ca517aa9062b916a446a5424c643176ca845b95add682aca980efe298b2b44df",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "*",
+      "license": "All rights reserved",
+      "issueTrackerURL": "https://github.com/henkelmax/simple-voice-chat/issues",
+      "mods": [
+        {
+          "modId": "voicechat",
+          "version": "1.21.1-2.6.27",
+          "displayName": "Simple Voice Chat",
+          "updateJSONURL": "https://update.maxhenkel.de/neoforge/voicechat",
+          "displayURL": "https://modrepo.de/minecraft/voicechat/overview",
+          "logoFile": "icon.png",
+          "authors": "Max Henkel",
+          "description": "A working voice chat in Minecraft!",
+          "displayTest": "NONE"
+        },
+        {
+          "modId": "voicechat_api",
+          "version": "2.6.27",
+          "displayName": "Simple Voice Chat API",
+          "displayURL": "https://voicechat.modrepo.de/",
+          "logoFile": "icon.png",
+          "authors": "Max Henkel",
+          "description": "The Simple Voice Chat API",
+          "displayTest": "NONE"
+        }
+      ],
+      "dependencies": {
+        "voicechat": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.0.0-beta,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21,1.21.1]",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "cloth_config",
+            "type": "optional",
+            "versionRange": "[15.0.127,)",
+            "ordering": "AFTER",
+            "side": "BOTH"
+          },
+          {
+            "modId": "sound_physics_remastered",
+            "type": "optional",
+            "versionRange": "[1.21.1-1.5.2,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [],
+    "services": [
+      "META-INF/services/de.maxhenkel.voicechat.intercompatibility.ClientCompatibilityManager",
+      "META-INF/services/de.maxhenkel.voicechat.intercompatibility.CommonCompatibilityManager"
+    ],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  },
+  {
+    "file": "xercapaint-neoforge-1.21.1-2.0.1.jar",
+    "sha256": "2f1ddfdfa491bb3bea56c935d767c25931bef8ee55fd0c952f98130100cb1218",
+    "loader": "neoforge",
+    "metadata": {
+      "modLoader": "javafml",
+      "loaderVersion": "[1,)",
+      "license": "GPL-3.0",
+      "mods": [
+        {
+          "modId": "xercapaint",
+          "version": "1.21.1-2.0.1",
+          "displayName": "Joy of Painting",
+          "authors": "xerca",
+          "logoFile": "logo.png",
+          "description": "Express yourself with paint, canvas and easel\n"
+        }
+      ],
+      "mixins": [
+        {
+          "config": "xercapaint.mixins.json"
+        }
+      ],
+      "dependencies": {
+        "xercapaint": [
+          {
+            "modId": "neoforge",
+            "type": "required",
+            "versionRange": "[21.1.242,)",
+            "ordering": "NONE",
+            "side": "BOTH"
+          },
+          {
+            "modId": "minecraft",
+            "type": "required",
+            "versionRange": "[1.21.1]",
+            "ordering": "NONE",
+            "side": "BOTH"
+          }
+        ]
+      }
+    },
+    "embedded": [],
+    "services": [],
+    "error": null,
+    "review": "Нужна проверка зависимостей, стороны, лицензии и тест запуска; наличие TOML не доказывает совместимость."
+  }
+]

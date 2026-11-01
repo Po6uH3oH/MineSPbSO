@@ -1,0 +1,675 @@
+[
+  {
+    "id": "ftbteams",
+    "slug": "ftb-teams",
+    "version": "2101.1.11",
+    "status": "unresolved",
+    "error": "HTTP 404"
+  },
+  {
+    "id": "ftbchunks",
+    "slug": "ftb-chunks",
+    "version": "2101.1.22",
+    "status": "unresolved",
+    "error": "HTTP 404"
+  },
+  {
+    "id": "ftbquests",
+    "slug": "ftb-quests",
+    "version": "2101.1.36",
+    "status": "unresolved",
+    "error": "HTTP 404"
+  },
+  {
+    "id": "ftblibrary",
+    "slug": "ftb-library",
+    "version": "2101.1.37",
+    "status": "unresolved",
+    "error": "HTTP 404"
+  },
+  {
+    "id": "voicechat",
+    "requested": "1.21.1-2.6.27",
+    "slug": "simple-voice-chat",
+    "projectId": "9eGKb6K1",
+    "license": {
+      "id": "LicenseRef-All-Rights-Reserved",
+      "name": "",
+      "url": null
+    },
+    "clientSide": "optional",
+    "serverSide": "optional",
+    "source": "https://github.com/henkelmax/simple-voice-chat",
+    "selected": {
+      "game_versions": [
+        "1.21",
+        "1.21.1"
+      ],
+      "loaders": [
+        "neoforge"
+      ],
+      "environment": "client_or_server_prefers_both",
+      "id": "iR08ksVF",
+      "project_id": "9eGKb6K1",
+      "author_id": "mqxuCPbU",
+      "featured": false,
+      "name": "Simple Voice Chat 1.21.1-2.6.27",
+      "version_number": "neoforge-1.21.1-2.6.27",
+      "changelog": "- Don't disconnect clients when receiving invalid data\n- Log an error if the server tries to send a packet that's too large\n- Allow skipping a packet in the API by throwing a `ProtocolException`\n",
+      "changelog_url": null,
+      "date_published": "2026-10-28T08:16:45.201228Z",
+      "downloads": 8496,
+      "version_type": "beta",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "xayCNXmN",
+          "hashes": {
+            "sha1": "8aded3a22614a8e1641973623e7817dccea513fa",
+            "sha512": "35a9411d71de86071501f6b42088585a1be6e90b03cafe75d89b53e913a5af9d5cdfa40a098d95908af63237577e58f6263ce4f676deec58aca2de0758eba9dd"
+          },
+          "url": "https://cdn.modrinth.com/data/9eGKb6K1/versions/iR08ksVF/voicechat-neoforge-1.21.1-2.6.27.jar",
+          "filename": "voicechat-neoforge-1.21.1-2.6.27.jar",
+          "primary": true,
+          "size": 4936802,
+          "file_type": null
+        }
+      ],
+      "dependencies": [
+        {
+          "version_id": null,
+          "project_id": "9s6osm5g",
+          "file_name": null,
+          "dependency_type": "optional"
+        },
+        {
+          "version_id": null,
+          "project_id": "9eGKb6K1",
+          "file_name": null,
+          "dependency_type": "optional"
+        }
+      ]
+    },
+    "candidateVersions": [
+      "neoforge-1.21.1-2.6.27",
+      "neoforge-1.21.1-2.6.26",
+      "neoforge-1.21.1-2.6.25",
+      "neoforge-1.21.1-2.6.24",
+      "neoforge-1.21.1-2.6.23",
+      "neoforge-1.21.1-2.6.22"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "voicechat-neoforge-1.21.1-2.6.27.jar",
+    "sha256": "ca517aa9062b916a446a5424c643176ca845b95add682aca980efe298b2b44df"
+  },
+  {
+    "id": "xercapaint",
+    "requested": "1.21.1-2.0.1",
+    "slug": "joy-of-painting",
+    "projectId": "YOs4tZea",
+    "license": {
+      "id": "GPL-3.0-or-later",
+      "name": "GNU General Public License v3.0 or later",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "required",
+    "source": "https://github.com/ercanserteli/xercamods",
+    "selected": {
+      "game_versions": [
+        "1.21.1"
+      ],
+      "loaders": [
+        "neoforge"
+      ],
+      "environment": "client_and_server",
+      "id": "73U02HbA",
+      "project_id": "YOs4tZea",
+      "author_id": "tIBCPzSw",
+      "featured": false,
+      "name": "Joy of Painting 1.21.1-2.0.1",
+      "version_number": "1.21.1-2.0.1",
+      "changelog": "Ported to neoforge 1.21.1",
+      "changelog_url": null,
+      "date_published": "2026-07-27T11:48:23.132498Z",
+      "downloads": 36125,
+      "version_type": "release",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "8QoA88sl",
+          "hashes": {
+            "sha1": "24674a7c3ed5ad152878a5f9b1d9a358fbbc2576",
+            "sha512": "a79e8f5af0a744492a09e1be417a76f4d4a03786b80d9b9fad298480c09a443a2a1ac54826d42fa8d6b5d1c4b4edc8dc227ba2aa642e7ffb3993bbfbf99c971a"
+          },
+          "url": "https://cdn.modrinth.com/data/YOs4tZea/versions/73U02HbA/xercapaint-neoforge-1.21.1-2.0.1.jar",
+          "filename": "xercapaint-neoforge-1.21.1-2.0.1.jar",
+          "primary": true,
+          "size": 438395,
+          "file_type": null
+        }
+      ],
+      "dependencies": []
+    },
+    "candidateVersions": [
+      "1.21.1-2.0.1"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "xercapaint-neoforge-1.21.1-2.0.1.jar",
+    "sha256": "2f1ddfdfa491bb3bea56c935d767c25931bef8ee55fd0c952f98130100cb1218"
+  },
+  {
+    "id": "immersive_melodies",
+    "requested": "0.8.2+1.21.1",
+    "slug": "immersive-melodies",
+    "projectId": "TaSmHw8V",
+    "license": {
+      "id": "GPL-3.0-only",
+      "name": "GNU General Public License v3.0 only",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "required",
+    "source": "https://github.com/Luke100000/ImmersiveMelodies",
+    "selected": {
+      "game_versions": [
+        "1.21.1"
+      ],
+      "loaders": [
+        "neoforge"
+      ],
+      "environment": "client_and_server",
+      "id": "5Lld5obZ",
+      "project_id": "TaSmHw8V",
+      "author_id": "TJkJC5Fn",
+      "featured": true,
+      "name": "[NeoForge 1.21.1] Immersive Melodies - 0.8.2",
+      "version_number": "0.8.2+1.21.1",
+      "changelog": "# 0.8.2\n\n* Fixed background thread not terminating\n\n# 0.8.1\n\n* Fixed bagpipe texture\n\n# 0.8.0\n\n* Added an upload screen mostly as a fallback for when drag and drop doesn't work\n* Free-playing now supports the mouse\n\n# 0.7.1\n\n* Maybe fixed conflicts with GUI mods\n\n# 0.7.0\n\n* Fixed non-ascii file name conflicts\n* Added `autoSynchronize` config to disable auto synchronization of nearby melodies\n* Fixed crashes on Forge\n* Channels are now treated as different tracks\n* Added better free playing UI\n* Offhand now supports selecting melodies\n* You can now play with two instruments at once (why tho?)\n* Instruments now trigger Skulk sensors\n* MIDI input now supports sustain pedal\n* Fixed syncing issues\n\n# 0.6.4\n\n* Fixed entities replacing NBT configured instruments\n* Added `rightClickToDropEntityInstrumentPermissionLevel` config\n\n# 0.6.3\n\n* Fixed first-person sound and bound sound instances to entities\n* Fix keyboard mapping in free playing (Thanks PhyX-Meow!)\n* Synced translations\n* Added note humanization\n\n# 0.6.2\n\n* Fixed recipes, advancements, and tags not loading correctly\n* Fixed a crash\n\n# 0.6.1\n\n* Fixed a crash\n\n# 0.6.0\n\n* Fixed direct playback not working correctly in Multiplayer\n* Breaking API changes to prepare for 1.21\n    * Switched to Mojmap (Might break addons!)\n    * Retired cobalt networking and registration\n\n# 0.5.1\n\n* Melodies are now grouped by namespaces as well\n* Melody names can now be translated via key `immersive_melodies.melodies.<file_name>`\n\n# 0.5.0\n\n* Added Keyboard and MIDI device support\n* Added perceived loudness adjustment for pitch\n    * This makes lower frequencies louder, and higher frequencies quieter, making instruments sound more balanced\n    * Configurable via `perceivedLoudnessAdjustmentFactor`, 0.5 by default\n* Added Bad Apple and a bit of Sus\n* Added Handpan\n* Added the Ender Bass\n\n# 0.4.0\n\n* Added a vielle\n* Fixed instrument sustain math, instruments sound a bit smoother now\n* Added a few more songs\n* Fixed playing melodies while riding\n* Added config flags\n    * `uploadPermissionLevel` (2 for example, only allows OPs to upload)\n    * `loadInbuiltMidis` To allow disabling the inbuilt midis\n    * `mobInstrumentDropFactor` To adjust the chance of mobs dropping their instrument\n    * `stopGameMusicForPlayers` To pause the game music when a player is playing a melody\n    * `stopGameMusicForMobs` To also pause when a mob is playing (disabled by default)\n    * `instrumentVolumeFactor` To adjust the volume of the instruments\n* Silence is now trimmed from the beginning of the midi\n* Removed automatic track selection to avoid confusion, tracks are now all enabled by default\n* Finally fixed de-syncs between tracks\n\n# 0.3.0\n\n* Fixed the recipe of tiny drum\n* Left-handed players now hold the instruments correctly\n* Technical improvements related to animations\n    * E.g., Pillagers can now hold instruments\n\n# 0.2.0\n\n* Added midi track selection\n* Added a tiny drum\n* Sounds are now played at twice the distance (32 blocks)\n* Fixed issues with updating/reuploading tracks\n\n# 0.1.2\n\n* Fixed dedicated server crash\n\n# 0.1.1\n\n* Zombiefied Piglins now also move their arms\n* Added compatibility with Entity Culling\n* Fixed wrong animations when in side hand\n* Allay now also like music\n* Husks can now also play (on fresh configs)\n* Fixed incompatibility with Sound Physics Remastered\n\n# 0.1.0\n\n* Added plugin API (thanks NerjalNosk!)\n* Fixed midis upload not working on Windows\n* Added error message when the file cannot be parsed\n\n# 0.0.5\n\n* Fixed some crashes\n* Fixed null textures\n\n# 0.0.4\n\n* Fixed broken backport\n* Fixed fabric incompatibility with model loading\n\n# 0.0.3\n\n* Only relevant entities pick up instruments\n* Right-click on an entity will cause them to drop their instrument\n* Fixed some midis\n* Added support for tempo changes mid-play\n* Streamed melody transfer for extra large midis\n* Changed data format\n    * Midi now stores tracks (no GUI to actually select specific tracks, but the technical capacities are here now)\n    * One .dat per melody to scale better\n* Lazy loading of datapacks to speed up starting time\n\n# 0.0.2\n\n* Slightly enhanced, which track is used until a proper selection is added\n* MIDIs without note-offs are now supported\n* Hat layer is now animated as well\n* No more crashes with Immersive Paintings\n* Added example datapack\n\n# 0.0.1\n\n* Released\n",
+      "changelog_url": null,
+      "date_published": "2026-10-29T18:42:08.774039Z",
+      "downloads": 1345,
+      "version_type": "release",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "rMdomgua",
+          "hashes": {
+            "sha1": "3c36714c2423cff437dcc2a4e7da0d703494899e",
+            "sha512": "7a9135160799896d3343493500ca51ba652dfcb46305e37bbcde50e8f3ac82585cdd1a5575adcf82d38e9bf1832b60a49bc5b3e1ff6e65aee1df6e08d7806a4c"
+          },
+          "url": "https://cdn.modrinth.com/data/TaSmHw8V/versions/5Lld5obZ/immersive_melodies-neoforge-0.8.2%2B1.21.1.jar",
+          "filename": "immersive_melodies-neoforge-0.8.2+1.21.1.jar",
+          "primary": true,
+          "size": 5570070,
+          "file_type": null
+        },
+        {
+          "id": "opKxAQP6",
+          "hashes": {
+            "sha1": "c9f366ecc23db3ca78a12d9681cfd45da4c2596e",
+            "sha512": "49d862b584a0cbafc4c39fbb2849904154e79b5fa892c1fdf122ec7b62118031c580aabe97560292bf9ec9cce038dce631235b6c62f206f4075f4d01f43a4b0a"
+          },
+          "url": "https://cdn.modrinth.com/data/TaSmHw8V/versions/5Lld5obZ/immersive_melodies-neoforge-0.8.2%2B1.21.1-sources.jar",
+          "filename": "immersive_melodies-neoforge-0.8.2+1.21.1-sources.jar",
+          "primary": false,
+          "size": 5464233,
+          "file_type": null
+        }
+      ],
+      "dependencies": []
+    },
+    "candidateVersions": [
+      "0.8.2+1.21.1",
+      "0.8.0+1.21.1",
+      "0.7.1+1.21.1",
+      "0.7.0+1.21.1",
+      "0.6.4+1.21.1",
+      "0.6.3+1.21.1"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "immersive_melodies-neoforge-0.8.2+1.21.1.jar",
+    "sha256": "345a54e22143ef3fa18c599a2972febe8916b5f522785dde04db688a4491792d"
+  },
+  {
+    "id": "etched",
+    "requested": "5.1.0",
+    "slug": "etched",
+    "projectId": "zi3Fnfmc",
+    "license": {
+      "id": "GPL-3.0-only",
+      "name": "GNU General Public License v3.0 only",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "required",
+    "source": "https://github.com/jacksonhardaway/etched",
+    "selected": {
+      "game_versions": [
+        "1.21.1"
+      ],
+      "loaders": [
+        "neoforge"
+      ],
+      "environment": "client_and_server",
+      "id": "h6eJfwiW",
+      "project_id": "zi3Fnfmc",
+      "author_id": "CIG1WktL",
+      "featured": false,
+      "name": "Etched 5.1.0 NeoForge",
+      "version_number": "5.1.0",
+      "changelog": "- Add support for Sophisticated Core",
+      "changelog_url": null,
+      "date_published": "2026-06-06T20:34:45.047983Z",
+      "downloads": 94601,
+      "version_type": "release",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "8SGjAlyh",
+          "hashes": {
+            "sha512": "cfbab71feeec3ea14686916349850a640d6ce51e763ac4f2486ed2cacd8c8042c9e457a51b0822fc7c05268370edbf59a322950cd37fbd1cb55c3b2575c3e4b9",
+            "sha1": "0cc1f1d0bc5d9af3f9ffbb8ce166f5cc9b59ec89"
+          },
+          "url": "https://cdn.modrinth.com/data/zi3Fnfmc/versions/h6eJfwiW/etched-5.1.0.jar",
+          "filename": "etched-5.1.0.jar",
+          "primary": true,
+          "size": 628299,
+          "file_type": null
+        },
+        {
+          "id": "yJoycf5U",
+          "hashes": {
+            "sha512": "911c7119c0fa2c6c2c3d0b9d2f4cfb7c04c51c84d41dcc1194c4b499dc140558cd804c3a62a9322647b5d9777981f9b1e9c8dce256faf11d61bb7e2860a14366",
+            "sha1": "c6f0d02f5c4435e7727f528ae87abae3cee63395"
+          },
+          "url": "https://cdn.modrinth.com/data/zi3Fnfmc/versions/h6eJfwiW/etched-5.1.0-sources.jar",
+          "filename": "etched-5.1.0-sources.jar",
+          "primary": false,
+          "size": 291881,
+          "file_type": null
+        }
+      ],
+      "dependencies": [
+        {
+          "version_id": null,
+          "project_id": "nmoqTijg",
+          "file_name": null,
+          "dependency_type": "optional"
+        }
+      ]
+    },
+    "candidateVersions": [
+      "5.1.0",
+      "5.0.1",
+      "5.0.0"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "etched-5.1.0.jar",
+    "sha256": "be4fa9704e3621acd55e738d7dd4d9bb229c13d4b82482044f8c3cba58e1f516"
+  },
+  {
+    "id": "emotecraft",
+    "requested": "2.4.12",
+    "slug": "emotecraft",
+    "projectId": "pZ2wrerK",
+    "license": {
+      "id": "GPL-3.0-or-later",
+      "name": "GNU General Public License v3.0 or later",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "optional",
+    "source": "https://github.com/KosmX/emotes",
+    "selected": {
+      "game_versions": [
+        "1.21.1"
+      ],
+      "loaders": [
+        "neoforge"
+      ],
+      "environment": "client_only_server_optional",
+      "id": "fu6N0NgM",
+      "project_id": "pZ2wrerK",
+      "author_id": "TpFRtZg9",
+      "featured": false,
+      "name": "2.4.12",
+      "version_number": "2.4.12+1.21.1-forge",
+      "changelog": "Fix EMF",
+      "changelog_url": null,
+      "date_published": "2025-08-29T17:34:45.244213Z",
+      "downloads": 256818,
+      "version_type": "release",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "oqCyjzLn",
+          "hashes": {
+            "sha512": "b9e59249f1fd2ad33c042561bdcebad74b3c1c82de86e4e11d0066e500c0c231ddf79487685367b47386370c8f7c763138ab5ba3f84d03e3b87667ecd2576dd1",
+            "sha1": "1228c7597c4b6cbaec10a090f9b5b471ca9042d4"
+          },
+          "url": "https://cdn.modrinth.com/data/pZ2wrerK/versions/fu6N0NgM/emotecraft-for-MC1.21.1-2.4.12-neoforge.jar",
+          "filename": "emotecraft-for-MC1.21.1-2.4.12-neoforge.jar",
+          "primary": true,
+          "size": 861829,
+          "file_type": null
+        }
+      ],
+      "dependencies": [
+        {
+          "version_id": null,
+          "project_id": "aRnIEV0F",
+          "file_name": null,
+          "dependency_type": "embedded"
+        },
+        {
+          "version_id": null,
+          "project_id": "gedNE4y2",
+          "file_name": null,
+          "dependency_type": "embedded"
+        }
+      ]
+    },
+    "candidateVersions": [
+      "2.4.12+1.21.1-forge",
+      "2.4.11+1.21.1-forge",
+      "2.4.10+1.21.1-forge",
+      "2.4.9+1.21.1-forge",
+      "2.4.8+1.21.1-forge",
+      "2.4.7+1.21.1-forge"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "emotecraft-for-MC1.21.1-2.4.12-neoforge.jar",
+    "sha256": "8cff63e900acd55bb39d41978cc2a70a974e326e2038c30ff20ccfde4c953a43"
+  },
+  {
+    "id": "customskinloader",
+    "requested": "15.1",
+    "slug": "customskinloader",
+    "projectId": "idMHQ4n2",
+    "license": {
+      "id": "GPL-3.0-only",
+      "name": "GNU General Public License v3.0 only",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "unsupported",
+    "source": "https://github.com/xfl03/MCCustomSkinLoader",
+    "selected": {
+      "game_versions": [
+        "1.8",
+        "1.8.8",
+        "1.8.9",
+        "1.9",
+        "1.9.4",
+        "1.10",
+        "1.10.2",
+        "1.11",
+        "1.11.2",
+        "1.12",
+        "1.12.1",
+        "1.12.2",
+        "1.13.2",
+        "1.14",
+        "1.14.1",
+        "1.14.2",
+        "1.14.3",
+        "1.14.4",
+        "1.15",
+        "1.15.1",
+        "1.15.2",
+        "1.16",
+        "1.16.1",
+        "1.16.2",
+        "1.16.3",
+        "1.16.4",
+        "1.16.5",
+        "1.17",
+        "1.17.1",
+        "1.18",
+        "1.18.1",
+        "1.18.2",
+        "1.19",
+        "1.19.1",
+        "1.19.2",
+        "1.19.3",
+        "1.19.4",
+        "1.20",
+        "1.20.1",
+        "1.20.2",
+        "1.20.3",
+        "1.20.4",
+        "1.20.5",
+        "1.20.6",
+        "1.21",
+        "1.21.1",
+        "1.21.2",
+        "1.21.3",
+        "1.21.4",
+        "1.21.5",
+        "1.21.6",
+        "1.21.7",
+        "1.21.8",
+        "1.21.9",
+        "1.21.10",
+        "1.21.11",
+        "26.1",
+        "26.1.1",
+        "26.1.2",
+        "26.2",
+        "26.3"
+      ],
+      "loaders": [
+        "fabric",
+        "forge",
+        "neoforge",
+        "quilt"
+      ],
+      "environment": "client_only",
+      "id": "yyYvYfZI",
+      "project_id": "idMHQ4n2",
+      "author_id": "SMzSSm8K",
+      "featured": false,
+      "name": "CustomSkinLoader_Universal_15.1",
+      "version_number": "15.1-Universal",
+      "changelog": "",
+      "changelog_url": null,
+      "date_published": "2026-10-11T04:18:25.250667Z",
+      "downloads": 408285,
+      "version_type": "release",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "s7s8kYJe",
+          "hashes": {
+            "sha512": "1c3ee525200d3dff69b19d4667f0c40155d0a8eedcfed4749ec8883fcf169bcf1123942a87ca73ecf46002fded35ec653bb902b0d3900c42f4eab0323793daf2",
+            "sha1": "324e6921ecd576e44875981466e7f22170b6541a"
+          },
+          "url": "https://cdn.modrinth.com/data/idMHQ4n2/versions/yyYvYfZI/CustomSkinLoader_Universal-15.1.jar",
+          "filename": "CustomSkinLoader_Universal-15.1.jar",
+          "primary": true,
+          "size": 222917,
+          "file_type": null
+        }
+      ],
+      "dependencies": []
+    },
+    "candidateVersions": [
+      "15.1-Universal",
+      "15.0.1-Universal",
+      "15.0-Universal",
+      "14.28-Universal",
+      "14.27-ForgeV3",
+      "14.26.1-ForgeV3"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "CustomSkinLoader_Universal-15.1.jar",
+    "sha256": "c8769a38b3cc1da2a7b2f5827d1a53a24cd1ef6d0784b1eb545569f5882a2ffb"
+  },
+  {
+    "id": "lmft",
+    "slug": "load-my-fucking-tags",
+    "version": "1.1.1+1.21.9",
+    "status": "unresolved",
+    "error": "HTTP 404"
+  },
+  {
+    "id": "nochatrestrictions",
+    "requested": "1.21.11-v1.0.3",
+    "slug": "no-chat-restrictions",
+    "projectId": "z440MEwJ",
+    "license": {
+      "id": "WTFPL",
+      "name": "Do What The F*ck You Want To Public License",
+      "url": "https://github.com/Aizistral-Studios/No-Chat-Restrictions/blob/1.16.X/LICENSE"
+    },
+    "clientSide": "required",
+    "serverSide": "unsupported",
+    "source": "https://github.com/Aizistral-Studios/No-Chat-Restrictions",
+    "selected": {
+      "game_versions": [
+        "1.21",
+        "1.21.1",
+        "1.21.2",
+        "1.21.3",
+        "1.21.4",
+        "1.21.5",
+        "1.21.6",
+        "1.21.7",
+        "1.21.8",
+        "1.21.9",
+        "1.21.10",
+        "1.21.11"
+      ],
+      "loaders": [
+        "neoforge"
+      ],
+      "environment": "client_only",
+      "id": "9HEx9IMw",
+      "project_id": "z440MEwJ",
+      "author_id": "2n9TlxqP",
+      "featured": false,
+      "name": "No Chat Restrictions NeoForge-MC1.21.11-v1.0.3",
+      "version_number": "NeoForge-MC1.21.11-v1.0.3",
+      "changelog": "#### **\\[Build MC1.21.11-v1.0.3\\]:**\n\n- Fixed incompatibility with [In-Game Account Switcher](https://modrinth.com/mod/in-game-account-switcher) on Forge and NeoForge ([thanks to Sw3ys, #28](https://github.com/Aizistral-Studios/No-Chat-Restrictions/pull/28)).\n\n#### **\\[Build MC1.21.11-v1.0.2\\]:**\n\n- Fixed Forge and NeoForge version of the mod not working;\n- Note: this version still has issues with [In-Game Account Switcher](https://modrinth.com/mod/in-game-account-switcher) on Forge & NeoForge. See [#11](https://github.com/Aizistral-Studios/No-Chat-Restrictions/issues/11) for additional information.\n\n#### **\\[Build MC1.21.11-v1.0.1\\]:**\n\n- Fixed incompatibility with [In-Game Account Switcher](https://modrinth.com/mod/in-game-account-switcher) ([thanks to Sw3ys, #23](https://github.com/Aizistral-Studios/No-Chat-Restrictions/pull/23)).\n\n#### **\\[Build MC1.21.11-v1.0.0\\]:**\n\n- Initial release for Minecraft 1.21 through 1.21.11.\n",
+      "changelog_url": null,
+      "date_published": "2026-09-30T10:09:58.739522Z",
+      "downloads": 69298,
+      "version_type": "release",
+      "status": "listed",
+      "requested_status": null,
+      "files": [
+        {
+          "id": "3mgdOHi1",
+          "hashes": {
+            "sha512": "55cae5d2ef0510396289c91d9ba8976e244c271995b633b662a0f99841619e4638586608d7a6095bf98a54794652987ba301f449ded839bb8bc09be207501435",
+            "sha1": "553654f8f037c6ad419176f38f02ad4775a733e5"
+          },
+          "url": "https://cdn.modrinth.com/data/z440MEwJ/versions/9HEx9IMw/NoChatRestrictions-NeoForge-MC1.21.11-v1.0.3.jar",
+          "filename": "NoChatRestrictions-NeoForge-MC1.21.11-v1.0.3.jar",
+          "primary": true,
+          "size": 9377,
+          "file_type": null
+        }
+      ],
+      "dependencies": []
+    },
+    "candidateVersions": [
+      "NeoForge-MC1.21.11-v1.0.3",
+      "NeoForge-MC1.21.11-v1.0.2",
+      "NeoForge-MC1.21.11-v1.0.1",
+      "NeoForge-MC1.21.11-v1.0.0"
+    ],
+    "status": "Catalogue matches Minecraft/loader; inspect JAR dependencies next",
+    "downloaded": "NoChatRestrictions-NeoForge-MC1.21.11-v1.0.3.jar",
+    "sha256": "b96f89e0d2180f1a1ff34e98cc40c2e3df6f93ad141aa570381096a3ee3d84e5"
+  },
+  {
+    "id": "betterend",
+    "requested": "21.0.39",
+    "slug": "betterend",
+    "projectId": "gc8OEnCC",
+    "license": {
+      "id": "MIT",
+      "name": "MIT License",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "required",
+    "source": "https://github.com/quiqueck/BetterEnd",
+    "selected": null,
+    "candidateVersions": [],
+    "status": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "id": "betternether",
+    "requested": "21.0.30",
+    "slug": "betternether",
+    "projectId": "MpzVLzy5",
+    "license": {
+      "id": "MIT",
+      "name": "MIT License",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "required",
+    "source": "https://github.com/quiqueck/BetterNether",
+    "selected": null,
+    "candidateVersions": [],
+    "status": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "id": "sodium",
+    "requested": "0.8.13+mc1.21.1",
+    "slug": "sodium",
+    "projectId": "AANobbMI",
+    "license": {
+      "id": "LicenseRef-Polyform-Shield-1.0.0",
+      "name": "",
+      "url": "https://github.com/CaffeineMC/sodium/blob/dev/LICENSE.md"
+    },
+    "clientSide": "required",
+    "serverSide": "unsupported",
+    "source": "https://github.com/CaffeineMC/sodium",
+    "selected": null,
+    "candidateVersions": [
+      "mc1.21.1-0.8.13-neoforge",
+      "mc1.21.1-0.8.13-beta.2-neoforge",
+      "mc1.21.1-0.8.13-beta.1-neoforge",
+      "mc1.21.1-0.8.12-neoforge",
+      "mc1.21.1-0.8.12-beta.2-neoforge",
+      "mc1.21.1-0.8.12-beta.1-neoforge"
+    ],
+    "status": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  },
+  {
+    "id": "iris",
+    "requested": "1.8.14-beta.1+mc1.21.1",
+    "slug": "iris",
+    "projectId": "YL57xq9U",
+    "license": {
+      "id": "LGPL-3.0-only",
+      "name": "GNU Lesser General Public License v3.0 only",
+      "url": null
+    },
+    "clientSide": "required",
+    "serverSide": "unsupported",
+    "source": "https://github.com/IrisShaders/Iris",
+    "selected": null,
+    "candidateVersions": [
+      "1.8.14-beta.1+1.21.1-neoforge",
+      "1.8.12+1.21.1-neoforge",
+      "1.8.8+1.21.1-neoforge",
+      "1.8.7+1.21.1-neoforge",
+      "1.8.6+1.21.1-neoforge",
+      "1.8.1+1.21.1-neoforge"
+    ],
+    "status": "Exact requested release not identified in filtered catalogue; NOT proof of incompatibility"
+  }
+]

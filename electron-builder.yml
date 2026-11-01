@@ -1,0 +1,22 @@
+appId: org.community.smp.launcher
+productName: MineSPbSO
+directories:
+  output: release
+  app: dist/app
+files:
+  - '**/*'
+extraResources:
+  - from: dist/launcher-config.json
+    to: launcher-config.json
+asar: true
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: MineSPbSO-${version}-Setup.${ext}
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+publish: null

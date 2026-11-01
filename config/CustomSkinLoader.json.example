@@ -1,0 +1,7 @@
+{
+  "loadlist": [{"name":"MineSPbSO","type":"CustomSkinAPI","root":"REPLACE_WITH_HTTPS_API_ORIGIN/csl/"}],
+  "enableLocalProfileCache": false,
+  "cacheExpiry": 30,
+  "forceDisableCache": false,
+  "forceLoadAllTextures": true
+}

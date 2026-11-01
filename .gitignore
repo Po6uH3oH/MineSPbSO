@@ -1,0 +1,14 @@
+node_modules/
+dist/
+release/
+.local/
+.env
+.env.*
+!.env.example
+config/launcher.local.json
+*.log
+mods/.gradle/
+mods/build/
+mods/run*/
+*.pem
+!config/*.public.pem

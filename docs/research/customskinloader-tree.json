@@ -1,0 +1,7 @@
+[
+  "Common/src/main/java/customskinloader/config/Config.java",
+  "Common/src/main/java/customskinloader/loader/JsonAPILoader.java",
+  "Common/src/main/java/customskinloader/loader/jsonapi/CustomSkinAPI.java",
+  "Common/src/main/java/customskinloader/loader/jsonapi/CustomSkinAPIPlus.java",
+  "Common/src/main/java/customskinloader/profile/UserProfile.java"
+]

@@ -1,0 +1,14 @@
+{
+ "testerMode":true,
+ "name":"MineSPbSO",
+ "apiUrl":"http://127.0.0.1:3000",
+ "manifestUrl":"",
+ "manifestPublicKey":"",
+ "gatewayHost":"localhost",
+ "gatewayPort":25566,
+ "gatewayCA":"",
+ "blueMapUrl":"",
+ "news":["Добро пожаловать! Сервер готовится к открытию."],
+ "updateUrl":"",
+ "signedUpdates":false
+}

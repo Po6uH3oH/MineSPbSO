@@ -1,0 +1,19 @@
+{
+ "testerMode":true,
+  "name": "MineSPbSO",
+  "apiUrl": "https://10.99.52.8:3443",
+  "manifestUrl": "",
+  "manifestPublicKey": "",
+  "gatewayHost": "localhost",
+  "gatewayPort": 25566,
+  "gatewayCA": "",
+  "blueMapUrl": "",
+  "news": [
+    "Добро пожаловать! Сервер готовится к открытию."
+  ],
+  "updateUrl": "",
+  "signedUpdates": false,
+  "apiCA": "-----BEGIN CERTIFICATE-----\nMIIEPzCCAqegAwIBAgIUNFCFWaLR7jNkGgIAKP+og3tbiGMwDQYJKoZIhvcNAQEL\nBQAwGTEXMBUGA1UEAwwOTWluZVNQYlNPIFRlc3QwHhcNMjYxMTAxMTk1MjA5WhcN\nMjcxMTAxMTk1MjA5WjAZMRcwFQYDVQQDDA5NaW5lU1BiU08gVGVzdDCCAaIwDQYJ\nKoZIhvcNAQEBBQADggGPADCCAYoCggGBALnrXlybtKw55+59QAQZcRTbTQq9N/3D\nRGPFckVQHpKcP61bAVX8oMJmOe9X68n62igAit5w08Hq2NhjpEzSV6Ygea3kB81D\nLreQwF/YO38qjIJv10QsG88xJzwl6ZWcxqJwWJUqzjabeJ2fsOuquUrbaYQVoMoS\nbAvbDNHREIwO7k+o3/M/jDfFhXKbWxxtDM5sg8A5Jw4xH0naYb1yy7Wv8FQXu4C2\ny4ZmdcqsF5x7blkg2MsDqagUd9jIKXi9Wf+cjIxBJiUgKgUK5ucjjBqk0SHcAPDu\nT26xoZM/rZkQtHmOyK/9yZV6ifYEv1Zb+R/16PdirIkgaDLP4vMAM3Uw2YxN1nYE\nrPy1vZRcFNjOhZUu8wLRzg/FFGCf8lH/puFvQSvak5Y5NkoX6oDASWbPK7CyBP7K\nb2aHGNOt/vNjcD6Gwvg0uraC2Ojrsj8ut3BVW5WSle/n0suoQieh/xvWyQbExxxt\nIxhLLweNMLobZ/udQR/Po7y/+iPOTIpCGwIDAQABo38wfTAdBgNVHQ4EFgQUo/Zn\nudIYG9V2I5t+XpCkYfKWo0gwHwYDVR0jBBgwFoAUo/ZnudIYG9V2I5t+XpCkYfKW\no0gwDwYDVR0TAQH/BAUwAwEB/zAVBgNVHREEDjAMhwQKYzQIhwR/AAABMBMGA1Ud\nJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4IBgQCKgmi4Xl2AGmGRIkcq\nkSD9mby2+Q5nO3HPyK2Kx7tE0R2O0d7MH1LynSBBx/AC4YxYo6AJzLq0b6DpYjRq\nlMZetrYl0RlIhUT7IeOoWCW0yAdcfP2fSCzovcTYm1ZdZej2d5D155GgQU/M8FCR\naVj4IMjYgyvJQ+xBj2a8AnIPqyR/jYD7Ou368ML/Cn/CTfr2RvszZ6g3W/VLssAg\nEPAhKBK0kqF5nBHmxH9W4MTsndugE/oysFPX344oNkiRYpSMr0vvRIkCtUiFURx3\ngE8JA1uNBrURdafNeNfYynldKcEx/oqhGuexxKe1AMfSABEGC+kxoaSQzydBG7qm\n54vrwS3drBM7nmCxykUS8fVQ2HVV1cnY9A9IWxbFCGb9Guol4fWzwbEmsbOcgFLu\nvWJOWyncjyW0Tc3fdGMTwv8uSjpvN1H7FbJdkEB30mT0nGPPCAy44UhFRH5ppzIh\nHRavXGcTrqHtu1lw8dhg0+NtlDAk4hexEf+zw4SQKmauNPY=\n-----END CERTIFICATE-----\n",
+  "testerHost": "10.99.52.8",
+  "testerPackKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAkx1t4xcFELA1nC7uPnByS0moTY5Sek+BtNlkhM8kc6k=\n-----END PUBLIC KEY-----\n"
+}

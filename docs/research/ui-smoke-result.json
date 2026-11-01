@@ -1,0 +1,18 @@
+{
+  "registration": true,
+  "testMailCallback": true,
+  "passwordRecovery": true,
+  "darkThemeRestored": true,
+  "login": true,
+  "emailVerification": true,
+  "noFactionRequired": true,
+  "missingPackBlocked": true,
+  "nodeIsolation": true,
+  "sessionRestoredAfterRestart": true,
+  "settingsRestoredAfterRestart": true,
+  "noApplicationMenu": true,
+  "simplifiedNavigation": true,
+  "packPickerAndPersistence": true,
+  "developerHostValidatedAndSaved": true,
+  "noRendererErrors": true
+}

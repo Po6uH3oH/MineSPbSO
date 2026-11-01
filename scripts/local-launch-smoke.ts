@@ -1,0 +1,22 @@
+import path from 'node:path';
+import { mkdir, cp, writeFile } from 'node:fs/promises';
+import { installGame, launchGame } from '../src/launcher/game.js';
+import { importLocalPack } from '../src/launcher/local-pack.js';
+import { offlineUuid } from '../src/shared/identity.js';
+const root=path.resolve('.local/Тест запуска сборки');
+const profile=path.join(process.env.APPDATA!,'ModrinthApp/profiles/LAYER BETA 0.0.0');
+await mkdir(root,{recursive:true});
+for(const dir of ['minecraft','runtime']) await cp(path.resolve('.local/Проверка игры с пробелами',dir),path.join(root,dir),{recursive:true,force:false});
+await installGame(root,console.log,profile);
+await importLocalPack(profile,root,console.log);
+const child=await launchGame(root,{nickname:'LauncherTest',uuid:offlineUuid('LauncherTest')},undefined,{},6);
+let log='';
+child.stdout?.on('data',chunk=>{log+=chunk.toString();});
+child.stderr?.on('data',chunk=>{log+=chunk.toString();});
+child.on('error',error=>console.error(error.message));
+const report=await new Promise(resolve=>{
+ const timer=setTimeout(()=>{child.kill();resolve({runningAtTimeout:true});},180000);
+ child.once('exit',code=>{clearTimeout(timer);resolve({exitCode:code});});
+});
+await writeFile('.local/local-launch-smoke.log',log);
+console.log(report);

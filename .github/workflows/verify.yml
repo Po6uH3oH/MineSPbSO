@@ -1,0 +1,66 @@
+name: Verify and package
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  typescript:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: ./scripts/dev-init.ps1
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm exec electron-builder --win nsis --x64 --publish never
+      - run: node scripts/verify-release.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-unsigned-preview
+          path: |
+            release/*Setup.exe
+            release/*Setup.exe.sha256
+  mod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.14.3'
+      - run: gradle -p mods build --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: community-gate
+          path: mods/build/libs/*.jar
+  tester-release:
+    if: startsWith(github.ref, 'refs/tags/tester-v')
+    needs: typescript
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-unsigned-preview
+          path: release
+      - name: Attach verified tester installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#tester-v}"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          cd release
+          sha256sum --check "MineSPbSO-${version}-Setup.exe.sha256"
+          gh release create "$GITHUB_REF_NAME" "MineSPbSO-${version}-Setup.exe" "MineSPbSO-${version}-Setup.exe.sha256" --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "MineSPbSO $version" --notes "Windows x64, тестовая сборка."
+
