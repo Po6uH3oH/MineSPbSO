@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { hashFile } from './files.js';
+import { javaInstancePath } from './windows-instance.js';
 import { noProgress, type Transfer } from './progress.js';
 import os from 'node:os';
 import { MinecraftFolder, Version, launch, type LaunchOption } from '@xmcl/core';
@@ -30,7 +31,8 @@ async function officialInstaller(folder:MinecraftFolder,root:string) {
 }
 export async function installGame(root:string,status:(s:string)=>void=console.log,localProfile?:string, progress:Transfer=noProgress, installedCache?:string) {
  if(process.platform!=='win32'||process.arch!=='x64')throw new Error('В этой версии поддерживается Windows x64');
- const folder=MinecraftFolder.from(path.join(root,'minecraft'));await mkdir(folder.root,{recursive:true});
+ const javaRoot=await javaInstancePath(root);
+ const folder=MinecraftFolder.from(path.join(javaRoot,'minecraft'));await mkdir(folder.root,{recursive:true});
  let phase = 'Проверяем NeoForge';
  status(phase);
  let version = localProfile ? await importInstalledNeoForge(localProfile, folder.root) : undefined;
@@ -60,7 +62,7 @@ export async function installGame(root:string,status:(s:string)=>void=console.lo
  const r=await fetch(DEFAULT_RUNTIME_ALL_URL,{signal:AbortSignal.timeout(30_000)});if(!r.ok)throw new Error('Недоступен каталог Java Mojang');
  const catalog=await r.json() as any;const target=catalog['windows-x64']['java-runtime-delta'][0];
  if(!target.version.name.startsWith('21.'))throw new Error('Источник вернул Java не версии 21');
- const javaHome=path.join(root,'runtime');
+ const javaHome=path.join(javaRoot,'runtime');
  await executeInstallWorkflow(createJavaRuntimeInstallWorkflow({target,destination:javaHome}),runtime);
  const javaPath=path.join(javaHome,'bin','java.exe');
  const versionCheck=await promisify(execFile)(javaPath,['-version'],{windowsHide:true});if(!/version "21\./.test(versionCheck.stderr))throw new Error('Проверка Java 21 не пройдена');
@@ -88,5 +90,5 @@ export function gameLaunchOptions(root:string,installation:{version:string,javaP
 export async function launchGame(root:string,profile:{nickname:string,uuid:string},port:number|string|undefined,env:NodeJS.ProcessEnv,memory:number) {
  const budget=memoryBudget(undefined,undefined,memory);if(!budget.canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения; игре нужно от 4 ГБ, также нужен запас для Windows и JVM.');
  const installation=JSON.parse(await readFile(path.join(root,'game-install.json'),'utf8'));
- return launch(gameLaunchOptions(root,installation,profile,port,env,budget.selected));
+ return launch(gameLaunchOptions(await javaInstancePath(root),installation,profile,port,env,budget.selected));
 }

@@ -44,7 +44,7 @@ jobs:
           name: community-gate
           path: mods/build/libs/*.jar
   clean-client:
-    if: startsWith(github.ref, 'refs/tags/tester-v') || github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/tester-v') || github.event_name == 'workflow_dispatch'
     runs-on: windows-latest
     timeout-minutes: 25
     steps:
@@ -64,7 +64,7 @@ jobs:
           Get-Item -LiteralPath (Join-Path $receipt.resourcePath ('versions/' + $receipt.version + '/' + $receipt.version + '.json'))
   tester-release:
     if: startsWith(github.ref, 'refs/tags/tester-v')
-    needs: typescript
+    needs: [typescript, clean-client]
     runs-on: ubuntu-latest
     permissions:
       contents: write
