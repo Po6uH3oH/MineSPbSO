@@ -43,6 +43,25 @@ jobs:
         with:
           name: community-gate
           path: mods/build/libs/*.jar
+  clean-client:
+    if: startsWith(github.ref, 'refs/tags/tester-v') || github.event_name == 'workflow_dispatch'
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - name: Install exact client in an empty Windows instance
+        run: pnpm exec tsx scripts/install-game.ts ".local/Чистый клиент"
+      - name: Verify bundled Java and loader install receipt
+        run: |
+          $receipt = Get-Content -Raw -LiteralPath '.local/Чистый клиент/game-install.json' | ConvertFrom-Json
+          if ($receipt.version -notmatch '21\.1\.256') { throw 'Unexpected NeoForge version' }
+          & $receipt.javaPath -version
+          Get-Item -LiteralPath (Join-Path $receipt.resourcePath ('versions/' + $receipt.version + '/' + $receipt.version + '.json'))
   tester-release:
     if: startsWith(github.ref, 'refs/tags/tester-v')
     needs: typescript
