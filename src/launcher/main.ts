@@ -11,7 +11,8 @@ import { z } from 'zod';
 import { configSchema,trustedUrl } from './config.js';
 import { acquireLock,verifyManifest,installPack,atomicJson } from './files.js';
 import { installGame,launchGame,memoryBudget } from './game.js';
-import { startBroker,startTunnel } from './tunnel.js';
+import { withCommunityGate } from './gate.js';
+import { startBroker,startTunnel,checkGateway } from './tunnel.js';
 import { importLocalPack } from './local-pack.js';
 import { configureSkins } from './skins.js';
 
@@ -44,6 +45,12 @@ memory=z.number().int().min(4).max(10).catch(4).parse(settings.memory);
 localPack=z.string().catch('').parse(settings.localPack);
 const isOwner=Object.values(os.networkInterfaces()).flat().some(n=>n?.address===config.testerHost);
 let host=serverTargets(settings.host ?? (isOwner?'localhost':config.testerHost)).host;
+const gatewayArgs=():[string,number,string|undefined]=>[tester?(host==='localhost'?'127.0.0.1':host):config.gatewayHost,config.gatewayPort,config.gatewayCA || (tester?config.apiCA:undefined) || undefined];
+const openGameTunnel=()=>startTunnel(...gatewayArgs());
+async function protectedStatus(){
+ const channel=await openGameTunnel();
+ try{return await queryServer('127.0.0.1',channel.port);}finally{channel.close();}
+}
 const saveSettings=()=>atomicJson(settingsFile,{memory,localPack,host});
 
 async function saveSession(){if(remember&&refresh){if(!safeStorage.isEncryptionAvailable())throw new Error('Защищённое хранилище Windows недоступно');await writeFile(tokenPath,safeStorage.encryptString(refresh));}else await unlink(tokenPath).catch(()=>{});}
@@ -84,7 +91,7 @@ handler('check-network',async()=>{
  lastChecks=await Promise.all([
    check('Аккаунты',async()=>{const r=await get(config.apiUrl+'/health',true);if(!(await r.json() as any)?.ok)throw new Error();return 'база доступна';}),
    check('Сборка',async()=>{const r=await get(config.apiUrl+'/packs/current.json',true);const m=verifyManifest(await r.text(),config.testerPackKey);return m.files.length+' файлов, подпись верна';}),
-   check('Minecraft',async()=>{const r=await queryServer(host);return r.players?r.players.online+' из '+r.players.max:'сервер в сети';}),
+   check('Minecraft',async()=>{const r=await protectedStatus();return r.players?r.players.online+' из '+r.players.max:'сервер в сети';}),
    check('BlueMap',async()=>{const r=await get(targets.map);await r.body?.cancel();return 'HTTP '+r.status;}),
    check('Maven NeoForge',async()=>{const r=await get('https://maven.neoforged.net/releases/net/neoforged/neoforge/21.1.256/neoforge-21.1.256-installer.jar.sha1');if(!/^[a-f0-9]{40}/i.test((await r.text()).trim()))throw new Error();return 'версия 21.1.256 доступна';}),
  ]);
@@ -92,7 +99,7 @@ handler('check-network',async()=>{
 });
 handler('host',async value=>{if(!tester||busy)throw new Error('Смена адреса сейчас недоступна');host=serverTargets(z.string().parse(value)).host;await saveSettings();return host;});
 handler('remote-pack',async()=>{if(busy)throw new Error('Закройте игру');localPack='';await saveSettings();});
-handler('server-status',async()=>{if(!tester)return null;try{return await queryServer(host);}catch{return null;}});
+handler('server-status',async()=>{if(!tester)return null;try{return await protectedStatus();}catch{return null;}});
 handler('map',async()=>{if(tester){await shell.openExternal(serverTargets(host).map);return;}if(!config.blueMapUrl)throw new Error('Карта ещё не настроена');await shell.openExternal(trustedUrl(config.blueMapUrl));});
 handler('skin',async raw=>{const model=z.enum(['default','slim']).parse(raw);const result=await dialog.showOpenDialog(win,{properties:['openFile'],filters:[{name:'PNG-скин',extensions:['png']}]});if(result.canceled)return;
  const data=await readFile(result.filePaths[0]!);if(data.length>65536)throw new Error('Скин должен быть меньше 64 КБ');await renew();const form=new FormData();form.set('skin',new Blob([data]),'skin.png');const r=await fetchFile(`${config.apiUrl}/me/skin?model=${model}`,{method:'POST',headers:{Authorization:`Bearer ${access}`},body:form,signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error((await r.json() as any).error);return true;});
@@ -113,11 +120,13 @@ handler('play',async()=>{
   if(!tester && (!config.manifestUrl || !config.manifestPublicKey))throw new Error('Владелец ещё не настроил подписанный серверный выпуск.');
   if(!localPack&&!config.testerPackKey&&(!config.manifestUrl||!config.manifestPublicKey))throw new Error('Выберите папку сборки в настройках. Серверный выпуск пока не настроен.');
   if(!memoryBudget(undefined,undefined,memory).canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения и повторите попытку.');
-    unlock=await acquireLock(root);
+  unlock=await acquireLock(root);
+  status('Проверяем защищённый вход на сервер');
+  await checkGateway(...gatewayArgs());
   if(tester){
    if(localPack){
      await installGame(root,status,localPack,progress);
-     await importLocalPack(localPack,root,status);
+     await importLocalPack(localPack,root,status,m=>withCommunityGate(root,m));
    }else{
      status('Получаем подписанный список файлов');
      const response=await fetchFile(config.apiUrl+'/packs/current.json',{signal:AbortSignal.timeout(12000)});
@@ -127,25 +136,22 @@ handler('play',async()=>{
      const manifest=verifyManifest(await response.text(),config.testerPackKey,previous.sequence??0);
      await installGame(root,status,undefined,progress,path.join(app.getPath('appData'),'ModrinthApp','meta'));
      if(manifest.archive){status('Проверяем архив сборки');await cacheArchive(root,manifest,progress,fetchFile);}
-     await installPack(root,manifest,'client',status,[],progress,fetchFile);
+     await installPack(root,await withCommunityGate(root,manifest),'client',status,[],progress,fetchFile);
      await atomicJson(checkpoint,{sequence:manifest.sequence});
    }
    skins=await skinEndpoint(config.apiUrl,fetchFile);
    await configureSkins(root,skins.url);
-   const address=serverTargets(host).game;
-   status('Запускаем Minecraft · подключение к '+address);
-   gameProcess=await launchGame(root,profile,address,{},memory);
+
   }else{
    status('Проверяем выпуск сборки');
   const response=await fetch(trustedUrl(config.manifestUrl,true),{signal:AbortSignal.timeout(30000)});if(!response.ok)throw new Error('Выпуск недоступен');
   const current=JSON.parse(await readFile(path.join(root,'trusted-sequence.json'),'utf8').catch(()=>'{}'));
   const text=await response.text();if(text.length>3_000_000)throw new Error('Манифест слишком велик');const manifest=verifyManifest(text,config.manifestPublicKey,current.sequence??0);
-  if(!manifest.files.some(f=>f.required&&f.side!=='server'&&/^mods\/community-gate[^/]*\.jar$/.test(f.path)))throw new Error('В сборке отсутствует обязательный мод проверки входа');
-  await installGame(root,status,undefined,progress);await installPack(root,manifest,'client',status,[],progress);await configureSkins(root,config.apiUrl);await atomicJson(path.join(root,'trusted-sequence.json'),{sequence:manifest.sequence});
-  tunnel=await startTunnel(config.gatewayHost,config.gatewayPort,config.gatewayCA||undefined);
+  await installGame(root,status,undefined,progress);await installPack(root,await withCommunityGate(root,manifest),'client',status,[],progress);await configureSkins(root,config.apiUrl);await atomicJson(path.join(root,'trusted-sequence.json'),{sequence:manifest.sequence});
+  }
+  tunnel=await openGameTunnel();
   broker=await startBroker(challenge=>authenticated('/join/ticket',{challenge}));
   status('Запускаем игру');gameProcess=await launchGame(root,profile,tunnel.port,{...broker.env,SMP_GAME_PORT:String(tunnel.port)},memory);
-  }
   gameProcess.stdout?.resume();gameProcess.stderr?.resume();
   gameProcess.once('error',()=>{status('Не удалось запустить Java');void cleanup();});
   gameProcess.once('exit',(code)=>{status(code===0?'Игра закрыта':'Игра завершилась с ошибкой. Проверьте журнал в папке игры.');void cleanup();});return true;

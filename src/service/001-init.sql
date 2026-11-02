@@ -22,3 +22,4 @@ CREATE TABLE IF NOT EXISTS challenges (
 );
 CREATE TABLE IF NOT EXISTS limits (key text PRIMARY KEY, count int NOT NULL, expires timestamptz NOT NULL);
 CREATE TABLE IF NOT EXISTS skin_blobs (hash text PRIMARY KEY, png bytea NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
+ALTER TABLE challenges ADD COLUMN IF NOT EXISTS ticket_session_id uuid REFERENCES sessions(id) ON DELETE SET NULL;

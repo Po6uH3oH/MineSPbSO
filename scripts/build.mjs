@@ -10,3 +10,4 @@ const pkg=JSON.parse(await readFile('package.json','utf8'));
 await writeFile('dist/app/package.json',JSON.stringify({name:pkg.name,version:pkg.version,main:'main.cjs',description:'Лаунчер частного SMP-сообщества',author:'MineSPbSO',license:'MIT'},null,2));
 try { await copyFile('config/launcher.tester.json','dist/launcher-config.json'); }
 catch(error){ if(error.code!=='ENOENT')throw error; await copyFile('config/launcher.example.json','dist/launcher-config.json'); }
+await copyFile('mods/build/libs/community-gate-0.2.0.jar','dist/app/community-gate-0.2.0.jar');

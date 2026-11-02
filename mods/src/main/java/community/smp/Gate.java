@@ -40,9 +40,11 @@ public final class Gate {
         bus.addListener(Gate::payloads);
         bus.addListener(Gate::configure);
         NeoForge.EVENT_BUS.addListener(Gate::starting);
+        AccountWhitelist.register();
         NeoForge.EVENT_BUS.addListener(Gate::joined);
     }
     static void starting(ServerStartingEvent event) {
+        if (!event.getServer().isDedicatedServer()) return;
         if(!"127.0.0.1".equals(event.getServer().getLocalIp()))throw new IllegalStateException("Community Gate requires server-ip=127.0.0.1 and a TLS gateway");
         if(event.getServer().usesAuthentication())throw new IllegalStateException("Community Gate requires online-mode=false");
     }
@@ -52,16 +54,21 @@ public final class Gate {
         catch(Exception ex){player.sendSystemMessage(Component.literal("Набор не подтверждён. Обратитесь к администратору."));}
     }
     static void payloads(RegisterPayloadHandlersEvent event) {
-        var r = event.registrar("1"); // Required: never mark optional.
+        var r = event.registrar("2"); // Required: never mark optional.
         r.configurationToClient(Challenge.TYPE, Challenge.CODEC, Gate::clientChallenge);
         r.configurationToServer(Proof.TYPE, Proof.CODEC, Gate::serverProof);
     }
     static void configure(RegisterConfigurationTasksEvent event) {
         var listener = (ServerConfigurationPacketListenerImpl) event.getListener();
+        if (listener.getConnection().isMemoryConnection()) return;
         event.register(new ICustomConfigurationTask() {
             public ConfigurationTask.Type type() { return TASK; }
             public void run(Consumer<CustomPacketPayload> sender) {
                 var profile = listener.getOwner();
+                if (!AccountWhitelist.allows(profile)) {
+                    listener.disconnect(Component.literal("Аккаунт не в списке допуска. Подтвердите почту и повторите вход через несколько секунд."));
+                    return;
+                }
                 JsonObject body = new JsonObject();
                 body.addProperty("nickname", profile.getName());
                 body.addProperty("uuid", profile.getId().toString());
@@ -85,7 +92,7 @@ public final class Gate {
             if (!"https".equals(uri.getScheme()) && !("http".equals(uri.getScheme()) && "127.0.0.1".equals(uri.getHost()))) throw new IllegalArgumentException("HTTPS required");
             var request = HttpRequest.newBuilder(uri).timeout(Duration.ofSeconds(10)).header("Authorization", "Bearer " + key).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(body.toString())).build();
             return HTTP.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
-                if (r.statusCode() != 200 || r.body().length() > 16384) throw new IllegalStateException("Authentication rejected");
+                if (r.statusCode() != 200 || r.body().length() > (route.equals("/server/whitelist") ? 1048576 : 16384)) throw new IllegalStateException("Authentication rejected");
                 return JsonParser.parseString(r.body()).getAsJsonObject();
             });
         } catch (RuntimeException ex) { return CompletableFuture.failedFuture(ex); }

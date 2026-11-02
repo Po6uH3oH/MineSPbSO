@@ -30,7 +30,7 @@ export async function createTesterBridge(keys:string, distribution:string, apiPo
         stream.on('error',()=>res.destroy()).pipe(res);
         return;
       }
-      if(!/^\/(?:health|me(?:\/skin)?|auth\/(?:login|register|verify|resend|refresh|forgot|reset|logout|revoke-all)|csl\/(?:[A-Za-z0-9_]{3,16}\.json|textures\/[a-f0-9]{64}))$/.test(url.pathname)){res.writeHead(404).end();return;}
+      if(!/^\/(?:health|join\/ticket|server\/(?:challenge|consume|whitelist)|me(?:\/skin)?|auth\/(?:login|register|verify|resend|refresh|forgot|reset|logout|revoke-all)|csl\/(?:[A-Za-z0-9_]{3,16}\.json|textures\/[a-f0-9]{64}))$/.test(url.pathname)){res.writeHead(404).end();return;}
       const upstream=http.request({hostname:'127.0.0.1',port:apiPort,path:url.pathname+url.search,method:req.method,headers:{...req.headers,host:'127.0.0.1:'+apiPort}},reply=>{
         res.writeHead(reply.statusCode??502,reply.headers);reply.on('error',()=>res.destroy()).pipe(res);
       });
@@ -41,4 +41,3 @@ export async function createTesterBridge(keys:string, distribution:string, apiPo
     }catch{if(!res.headersSent)res.writeHead(500);res.end();}
   });
 }
-

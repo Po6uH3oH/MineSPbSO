@@ -7,7 +7,7 @@ const file=process.argv[2]??`release/MineSPbSO-${pkg.version}-Setup.exe`;
 const builderRequire=createRequire(import.meta.resolve('electron-builder'));
 const appRequire=createRequire(builderRequire.resolve('app-builder-lib'));
 const {extractFile}=appRequire('@electron/asar');
-for(const name of ['main.cjs','preload.cjs','renderer.js','index.html','style.css','package.json']){
+for(const name of ['main.cjs','preload.cjs','renderer.js','index.html','style.css','package.json','community-gate-0.2.0.jar']){
  const packed=extractFile('release/win-unpacked/resources/app.asar',name);
  assert.ok(packed.equals(await readFile(`dist/app/${name}`)),`Packaged ${name} differs from build`);
 }

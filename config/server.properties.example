@@ -1,10 +1,11 @@
 server-ip=127.0.0.1
-server-port=25565
+server-port=48906
 online-mode=false
 enforce-secure-profile=false
 enable-rcon=false
 enable-query=false
-white-list=false
+white-list=true
+enforce-whitelist=true
 max-players=20
 view-distance=8
 simulation-distance=6

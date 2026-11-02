@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict';
+import {testServer,until,duplicateLogin} from './test-server-fixture.js';
+import {launchGame} from '../src/launcher/game.js';
+import {offlineUuid} from '../src/shared/identity.js';
+import {startTunnel,startBroker} from '../src/launcher/tunnel.js';
 import { once } from 'node:events';
 import { sign,randomBytes } from 'node:crypto';
 import { mkdir,readFile,writeFile,link,cp } from 'node:fs/promises';
@@ -20,7 +24,10 @@ const cfg=JSON.parse(await readFile('config/launcher.tester.json','utf8'));
 const manifest=verifyManifest(await readFile('.local/tester-distribution/current.json','utf8'),cfg.testerPackKey);
 const db=await database('pglite:');await migrate(db);
 let code='';
-const api=await createService({db,serverId:'test',serverKey:randomBytes(32).toString('hex'),publicUrl:'http://localhost',sendMail:async(_to,_subject,body)=>{code=body.split('\n\n')[1]!;}});
+const serverKey=randomBytes(32).toString('hex');
+const api=await createService({db,serverId:'test',serverKey,publicUrl:'http://localhost',sendMail:async(_to,_subject,body)=>{code=body.split('\n\n')[1]!;}});
+let deniedProofs=0;
+api.addHook('onResponse',async(req,reply)=>{if(req.url==='/server/consume'&&reply.statusCode===403)deniedProofs++;});
 const localApi=await api.listen({host:'127.0.0.1',port:0});
 const bridge=await createTesterBridge('.local/tester-keys',dist,Number(new URL(localApi).port));
 bridge.listen(0,'127.0.0.1');await once(bridge,'listening');
@@ -33,6 +40,7 @@ bridge.on('request',req=>{
  else if(req.url?.startsWith('/csl/'))counts.skinProfiles++;
 });
 let app:Awaited<ReturnType<typeof electron.launch>>|undefined;
+let backend:Awaited<ReturnType<typeof testServer>>|undefined;
 const account={nickname:'LayerNetTest',email:'net-test@example.test',password:randomBytes(24).toString('hex')};
 try{
  const linked=new Set<string>();
@@ -46,7 +54,12 @@ try{
  await writeFile(path.join(dist,'current.json'),JSON.stringify({payload:payload.toString('base64'),signature:sign(null,payload,await readFile('.local/tester-keys/pack-private.pem')).toString('base64')}));
  const register=await api.inject({method:'POST',url:'/auth/register',payload:account});assert.ok(register.statusCode<300,register.body);
  assert.equal((await api.inject({method:'POST',url:'/auth/verify',payload:{token:code}})).statusCode,200);
- await mkdir(path.join(data,'config'));await writeFile(path.join(data,'config/launcher.local.json'),JSON.stringify({...cfg,apiUrl,testerHost:'localhost'}));
+ backend=await testServer(localApi,serverKey);
+ const mc=backend;
+ const listed=async()=>JSON.parse(await readFile(path.join(mc.root,'whitelist.json'),'utf8').catch(()=>'[]')).some((p:any)=>p.uuid===offlineUuid(account.nickname));
+ await until(listed,'Аккаунт не попал в whitelist.json');
+ console.log('WHITELIST verified player added');
+ await mkdir(path.join(data,'config'));await writeFile(path.join(data,'config/launcher.local.json'),JSON.stringify({...cfg,apiUrl,testerHost:'localhost',gatewayCA:cfg.apiCA,gatewayPort:mc.gatewayPort}));
  const png=new PNG({width:64,height:64});png.data.fill(200);const skin=path.join(data,'skin.png');await writeFile(skin,PNG.sync.write(png));
  // Exercise the real network installer separately so a Maven/Mojang outage cannot hide a broken pack distribution.
  const isolated=path.join(data,'empty-pack');await mkdir(isolated);let transferred=0;
@@ -85,8 +98,8 @@ try{
    if(await page.locator('#notice').isVisible())throw new Error(await page.locator('#notice').innerText());
    const log=await readFile(path.join(data,'instance/game/logs/latest.log'),'utf8').catch(()=>'');
    if(/Couldn't connect to server|Can't connect to server|AnnotatedSocketException: Permission denied: getsockopt/.test(log))throw new Error('Клиент не смог подключиться к игровому серверу');
-   if(/Connecting to localhost, 48905|Connecting to 127\.0\.0\.1, 48905/.test(log) && /joined the game|Loaded \d+ advancements|Received client config|Connected to server|Получено достижений|присоединился к игре/i.test(log)){
-     const status=await queryServer('127.0.0.1');joined=!!status.players?.online;
+   if(log.includes('Connecting to 127.0.0.1, ') && /joined the game|Loaded \d+ advancements|Received client config|Connected to server|Получено достижений|присоединился к игре/i.test(log)){
+     const status=await queryServer('127.0.0.1',mc.port);joined=!!status.players?.online;
    }
    if(joined && counts.textures)break;
    if(stage.startsWith('Игра завершилась')||stage==='Игра закрыта')break;
@@ -95,7 +108,27 @@ try{
  console.log('GAME_RESULT',JSON.stringify(report));
  assert.ok(joined,'Тестовый клиент не подтвердил вход в мир');
  assert.ok(counts.textures,'Нет запроса текстуры от игры');
+ assert.equal((await db.query('SELECT id FROM challenges WHERE consumed')).rows.length,1);
+ assert.ok(await duplicateLogin(mc.gatewayPort,cfg.apiCA,account.nickname,offlineUuid(account.nickname)),'Ранний отказ дубликату не получен');
+ assert.equal((await queryServer('127.0.0.1',mc.port)).players?.online,1);
+ console.log('Duplicate login rejected before evicting the genuine player');
+ await db.query('UPDATE accounts SET banned=true WHERE nickname=$1',[account.nickname]);
+ await until(async()=>!(await listed())&&(await queryServer('127.0.0.1',mc.port)).players?.online===0,'Заблокированный игрок остался на сервере');
+ await app.evaluate(()=>{(globalThis as any).smokeJava?.kill();});
+ await db.query('UPDATE accounts SET banned=false WHERE nickname=$1',[account.nickname]);await until(listed,'Вайт-лист не восстановился');
+ const tunnel=await startTunnel('127.0.0.1',mc.gatewayPort,cfg.apiCA);
+ const fakeBroker=await startBroker(async()=>({ticket:randomBytes(32).toString('base64url')}));
+ let spoof:Awaited<ReturnType<typeof launchGame>>|undefined;
+ try{
+   spoof=await launchGame(path.join(data,'instance'),{nickname:account.nickname,uuid:offlineUuid(account.nickname)},tunnel.port,{...fakeBroker.env,SMP_GAME_PORT:String(tunnel.port)},4);
+   spoof.stdout?.resume();spoof.stderr?.resume();
+   await until(async()=>deniedProofs>0,'Нет отказа реальному клиенту с поддельным билетом',150000);
+   assert.equal((await queryServer('127.0.0.1',mc.port)).players?.online,0);
+   assert.equal((await db.query('SELECT id FROM challenges WHERE consumed')).rows.length,1);
+   console.log('SECURITY genuine login, ban/kick, unban and denial of identical nickname/UUID with a fabricated ticket passed');
+ }finally{spoof?.kill();fakeBroker.close();tunnel.close();}
 }finally{
  if(app){await app.evaluate(()=>{(globalThis as any).smokeJava?.kill();}).catch(()=>{});await new Promise(resolve=>setTimeout(resolve,800));app.process().kill();}
+ if(backend)await backend.close();
  bridge.closeAllConnections();bridge.close();await api.close();await db.close();
 }

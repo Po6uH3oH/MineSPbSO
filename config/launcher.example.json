@@ -5,7 +5,7 @@
  "manifestUrl":"",
  "manifestPublicKey":"",
  "gatewayHost":"localhost",
- "gatewayPort":25566,
+ "gatewayPort":48905,
  "gatewayCA":"",
  "blueMapUrl":"",
  "news":["Добро пожаловать! Сервер готовится к открытию."],

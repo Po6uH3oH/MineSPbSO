@@ -3,7 +3,7 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="community_gate"
-version="0.1.0"
+version="0.2.0"
 displayName="Community Gate"
 description="Проверка аккаунта сообщества до входа в мир"
 [[dependencies.community_gate]]
@@ -18,3 +18,5 @@ type="required"
 versionRange="[1.21.1]"
 ordering="NONE"
 side="BOTH"
+[[mixins]]
+config="community-gate.mixins.json"

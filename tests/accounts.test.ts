@@ -12,13 +12,20 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
  try{
   assert.equal((await call('/auth/register',{email:'test@example.org',nickname:'Player_One',password:'a strong password'})).status,200);
   assert.equal((await call('/auth/register',{email:'other@example.org',nickname:'player_one',password:'a strong password'})).status,409);
+  assert.equal((await call('/server/whitelist',{})).status,401);
+  assert.deepEqual((await call('/server/whitelist',{},serverKey)).players,[]);
   const verify=code();let login=await call('/auth/login',{email:'test@example.org',password:'a strong password'});const original=login.account.uuid;
   assert.equal(original,offlineUuid('Player_One'));
   assert.equal((await call('/auth/verify',{token:verify})).status,200);
   assert.equal((await call('/auth/verify',{token:verify})).status,400);
   const challenge=async(name='Player_One')=>call('/server/challenge',{nickname:name,uuid:offlineUuid(name)},serverKey);
   assert.equal((await call('/server/challenge',{nickname:'Player_One',uuid:original})).status,401);
-  assert.equal((await call('/join/ticket',{challenge:(await challenge('Imposter')).challenge},login.access)).status,403);
+  assert.equal((await challenge('Imposter')).status,403);
+  assert.deepEqual((await call('/server/whitelist',{},serverKey)).players,[{name:'Player_One',uuid:original}]);
+  await call('/auth/register',{email:'other@example.org',nickname:'DifferentNick',password:'another strong password'});
+  await call('/auth/verify',{token:code()});
+  const stranger=await call('/auth/login',{email:'other@example.org',password:'another strong password'});
+  assert.equal((await call('/join/ticket',{challenge:(await challenge()).challenge},stranger.access)).status,403);
   const ch=(await challenge()).challenge;
   assert.equal((await call('/server/consume',{challenge:ch,ticket:'x'.repeat(43),nickname:'Player_One',uuid:original},serverKey)).status,403);
   const t=await call('/join/ticket',{challenge:ch},login.access);assert.equal(t.status,200);
@@ -27,6 +34,11 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
   assert.equal((await call('/join/ticket',{challenge:ch},login.access)).status,403);
   const expired=(await challenge()).challenge;await db.query("UPDATE challenges SET expires=now()-interval '1 second' WHERE id=$1",[expired]);
   assert.equal((await call('/join/ticket',{challenge:expired},login.access)).status,403);
+  const revokedChallenge=(await challenge('DifferentNick')).challenge;
+  const revokedTicket=await call('/join/ticket',{challenge:revokedChallenge},stranger.access);
+  assert.equal(revokedTicket.status,200);
+  await call('/auth/logout',{},stranger.access);
+  assert.equal((await call('/server/consume',{challenge:revokedChallenge,ticket:revokedTicket.ticket,nickname:'DifferentNick',uuid:offlineUuid('DifferentNick')},serverKey)).status,403);
   const next=await call('/auth/refresh',{refresh:login.refresh});assert.equal(next.status,200);assert.equal((await call('/auth/refresh',{refresh:login.refresh})).status,401);
   await call('/auth/forgot',{email:'test@example.org'});const reset=code();assert.equal((await call('/auth/reset',{token:reset,password:'new strong password'})).status,200);
   assert.equal((await call('/auth/reset',{token:reset,password:'new strong password'})).status,400);
@@ -36,6 +48,7 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
   await db.query('UPDATE accounts SET banned=true');
   assert.equal((await call('/server/consume',{challenge:banChallenge,ticket:banTicket.ticket,nickname:'Player_One',uuid:original},serverKey)).status,403);
   assert.equal((await call('/auth/refresh',{refresh:login.refresh})).status,401);
+  assert.deepEqual((await call('/server/whitelist',{},serverKey)).players,[]);
  }finally{await app.close();await db.close();}
 });
 

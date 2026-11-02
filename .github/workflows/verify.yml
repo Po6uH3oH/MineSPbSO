@@ -7,6 +7,7 @@ permissions:
   contents: read
 jobs:
   typescript:
+    needs: mod
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,15 +19,21 @@ jobs:
       - run: pnpm check
       - run: ./scripts/dev-init.ps1
       - run: pnpm test
+      - uses: actions/download-artifact@v4
+        with:
+          name: community-gate
+          path: mods/build/libs
       - run: pnpm build
       - run: pnpm exec electron-builder --win nsis --x64 --publish never
       - run: node scripts/verify-release.mjs
+      - run: Copy-Item mods/build/libs/community-gate-0.2.0.jar release/
       - uses: actions/upload-artifact@v4
         with:
           name: windows-unsigned-preview
           path: |
             release/*Setup.exe
             release/*Setup.exe.sha256
+            release/community-gate-0.2.0.jar
   mod:
     runs-on: ubuntu-latest
     steps:
@@ -81,5 +88,4 @@ jobs:
           [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           cd release
           sha256sum --check "MineSPbSO-${version}-Setup.exe.sha256"
-          gh release create "$GITHUB_REF_NAME" "MineSPbSO-${version}-Setup.exe" "MineSPbSO-${version}-Setup.exe.sha256" --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "MineSPbSO $version" --notes "Windows x64, тестовая сборка."
-
+          gh release create "$GITHUB_REF_NAME" "MineSPbSO-${version}-Setup.exe" "MineSPbSO-${version}-Setup.exe.sha256" "community-gate-0.2.0.jar" --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "MineSPbSO $version" --notes "Windows x64, тестовая сборка."

@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
+  "package": "community.smp.mixin",
+  "mixins": ["DuplicateLoginGuard"],
+  "injectors": {"defaultRequire": 1}
+}
+
