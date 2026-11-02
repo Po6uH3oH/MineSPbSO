@@ -1,4 +1,5 @@
-import { spawn } from 'node:child_process';
+import { promisify } from 'node:util';
+import { spawn,execFile } from 'node:child_process';
 import { once } from 'node:events';
 import { cp,copyFile,readFile,mkdir,mkdtemp,writeFile } from 'node:fs/promises';
 import net from 'node:net';
@@ -42,7 +43,9 @@ export async function testServer(api:string,key:string) {
  ].join('\n'));
  await mkdir(path.join(root,'config/voicechat'),{recursive:true});
  await writeFile(path.join(root,'config/voicechat/voicechat-server.properties'),'port=0\nbind_address=127.0.0.1\n');
- const server=spawn(process.env.JAVA_EXE||'java',['-Xmx3G','@libraries/net/neoforged/neoforge/21.1.256/win_args.txt','nogui'],{
+ const trust=path.join(root,'test-api-trust.p12');
+ await promisify(execFile)(process.env.KEYTOOL_EXE||'keytool',['-importcert','-noprompt','-alias','test-api','-storetype','PKCS12','-keystore',trust,'-storepass','public-fixture','-file',path.resolve('.local/tester-keys/tls-cert.pem')],{windowsHide:true});
+ const server=spawn(process.env.JAVA_EXE||'java',['-Djavax.net.ssl.trustStore='+trust,'-Djavax.net.ssl.trustStorePassword=public-fixture','-Xmx3G','@libraries/net/neoforged/neoforge/21.1.256/win_args.txt','nogui'],{
   cwd:root,env:{...process.env,SMP_API_URL:api,SMP_SERVER_KEY:key},windowsHide:true,stdio:['pipe','pipe','pipe']});
  let output='';const collect=(b:Buffer)=>{output=(output+b.toString()).slice(-8000);};server.stdout.on('data',collect);server.stderr.on('data',collect);
  const gateway=createGameGateway(await readFile('.local/tester-keys/tls-cert.pem'),await readFile('.local/tester-keys/tls-private.pem'),port);

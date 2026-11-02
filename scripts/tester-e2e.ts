@@ -54,7 +54,7 @@ try{
  await writeFile(path.join(dist,'current.json'),JSON.stringify({payload:payload.toString('base64'),signature:sign(null,payload,await readFile('.local/tester-keys/pack-private.pem')).toString('base64')}));
  const register=await api.inject({method:'POST',url:'/auth/register',payload:account});assert.ok(register.statusCode<300,register.body);
  assert.equal((await api.inject({method:'POST',url:'/auth/verify',payload:{token:code}})).statusCode,200);
- backend=await testServer(localApi,serverKey);
+ backend=await testServer(apiUrl,serverKey);
  const mc=backend;
  const listed=async()=>JSON.parse(await readFile(path.join(mc.root,'whitelist.json'),'utf8').catch(()=>'[]')).some((p:any)=>p.uuid===offlineUuid(account.nickname));
  await until(listed,'Аккаунт не попал в whitelist.json');
@@ -126,6 +126,16 @@ try{
    assert.equal((await queryServer('127.0.0.1',mc.port)).players?.online,0);
    assert.equal((await db.query('SELECT id FROM challenges WHERE consumed')).rows.length,1);
    console.log('SECURITY genuine login, ban/kick, unban and denial of identical nickname/UUID with a fabricated ticket passed');
+   const exited=once(spoof,'exit');spoof.kill();await exited;
+   await api.close();
+   const serverLog=()=>readFile(path.join(mc.root,'logs/latest.log'),'utf8');
+   await until(async()=>(await serverLog()).includes('whitelist sync failed; new logins denied'),'Сервер не обнаружил остановку API');
+   assert.ok(await listed(),'Сбой API перезаписал whitelist.json');
+   spoof=await launchGame(path.join(data,'instance'),{nickname:account.nickname,uuid:offlineUuid(account.nickname)},tunnel.port,{...fakeBroker.env,SMP_GAME_PORT:String(tunnel.port)},4);
+   spoof.stdout?.resume();spoof.stderr?.resume();
+   await until(async()=>(await serverLog()).includes('Сервис списка допуска недоступен'),'При выключенном API не получен отказ входа',150000);
+   assert.equal((await queryServer('127.0.0.1',mc.port)).players?.online,0);
+   console.log('API outage denied new login despite persisted whitelist');
  }finally{spoof?.kill();fakeBroker.close();tunnel.close();}
 }finally{
  if(app){await app.evaluate(()=>{(globalThis as any).smokeJava?.kill();}).catch(()=>{});await new Promise(resolve=>setTimeout(resolve,800));app.process().kill();}

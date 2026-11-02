@@ -21,6 +21,7 @@ final class AccountWhitelist {
     private static final Gson GSON = new Gson();
     private static MinecraftServer owner;
     private static boolean fetching;
+    private static boolean available;
     private static Map<UUID,String> allowed = Map.of();
 
     static void register() {
@@ -28,6 +29,8 @@ final class AccountWhitelist {
         NeoForge.EVENT_BUS.addListener(AccountWhitelist::tick);
         NeoForge.EVENT_BUS.addListener(AccountWhitelist::stop);
     }
+
+    static boolean available() { return available; }
 
     static boolean allows(GameProfile profile) {
         return profile.getName().equals(allowed.get(profile.getId()));
@@ -44,7 +47,7 @@ final class AccountWhitelist {
     }
 
     private static void stop(ServerStoppedEvent event) {
-        if (owner == event.getServer()) { owner = null; fetching = false; allowed = Map.of(); }
+        if (owner == event.getServer()) { owner = null; fetching = false; available = false; allowed = Map.of(); }
     }
 
     private static void tick(ServerTickEvent.Post event) {
@@ -63,6 +66,7 @@ final class AccountWhitelist {
                     if (error != null) throw new IOException("Account API unavailable", error);
                     apply(server, snapshot);
                 } catch (Exception failure) {
+                    available = false;
                     allowed = Map.of(); // A stale disk list alone never authorizes a connection.
                     LogUtils.getLogger().warn("Community Gate: whitelist sync failed; new logins denied");
                 }
@@ -92,7 +96,8 @@ final class AccountWhitelist {
             entries.add(entry);
         });
         String content = GSON.toJson(entries);
-        if (!Files.exists(file) || !Files.readString(file).equals(content)) {
+        boolean changed = !Files.exists(file) || !Files.readString(file).equals(content);
+        if (changed) {
             if (Files.exists(file)) {
                 try { Files.copy(file, file.resolveSibling("whitelist.before-community-gate.json")); }
                 catch (FileAlreadyExistsException alreadyBackedUp) { /* keep first snapshot */ }
@@ -104,11 +109,11 @@ final class AccountWhitelist {
             } finally { Files.deleteIfExists(temp); }
         }
         // Reload even after restart when the bytes on disk already match.
-        server.getPlayerList().reloadWhiteList();
+        if (changed || !available || !rows.equals(allowed)) server.getPlayerList().reloadWhiteList();
+        available = true;
         allowed = Map.copyOf(rows);
         for (var player : List.copyOf(server.getPlayerList().getPlayers()))
             if (!allows(player.getGameProfile()))
                 player.connection.disconnect(Component.literal("Доступ аккаунта к серверу отозван."));
     }
 }
-

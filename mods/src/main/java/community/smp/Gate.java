@@ -65,6 +65,10 @@ public final class Gate {
             public ConfigurationTask.Type type() { return TASK; }
             public void run(Consumer<CustomPacketPayload> sender) {
                 var profile = listener.getOwner();
+                if (!AccountWhitelist.available()) {
+                    listener.disconnect(Component.literal("Сервис списка допуска недоступен. Повторите вход позже."));
+                    return;
+                }
                 if (!AccountWhitelist.allows(profile)) {
                     listener.disconnect(Component.literal("Аккаунт не в списке допуска. Подтвердите почту и повторите вход через несколько секунд."));
                     return;

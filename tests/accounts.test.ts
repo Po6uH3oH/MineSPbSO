@@ -30,6 +30,8 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
   assert.equal((await call('/server/consume',{challenge:ch,ticket:'x'.repeat(43),nickname:'Player_One',uuid:original},serverKey)).status,403);
   const t=await call('/join/ticket',{challenge:ch},login.access);assert.equal(t.status,200);
   const body={challenge:ch,ticket:t.ticket,nickname:'Player_One',uuid:original};
+  assert.equal((await call('/server/consume',{...body,challenge:(await challenge()).challenge},serverKey)).status,403);
+  assert.equal((await call('/server/consume',{challenge:ch,nickname:'Player_One',uuid:original},serverKey)).status,400);
   const race=await Promise.all([call('/server/consume',body,serverKey),call('/server/consume',body,serverKey)]);assert.deepEqual(race.map(r=>r.status).sort(),[200,403]);
   assert.equal((await call('/join/ticket',{challenge:ch},login.access)).status,403);
   const expired=(await challenge()).challenge;await db.query("UPDATE challenges SET expires=now()-interval '1 second' WHERE id=$1",[expired]);
