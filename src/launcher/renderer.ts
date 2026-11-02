@@ -12,6 +12,12 @@ async function refresh(){state=await call('state');$('identity').textContent=sta
  $('check-network').hidden=!state.tester;
  if(document.activeElement!==$('server-host'))($('server-host') as HTMLInputElement).value=state.host;
  $('host-info').textContent=state.tester?'Текущий адрес: '+state.host:'Адрес задаёт владелец серверного выпуска.';
+ $('launcher-version').textContent='Версия лаунчера: '+state.version;
+ $('update-offer').hidden=!state.availableVersion;
+ $('update-title').textContent='Доступна версия '+(state.availableVersion??'');
+ $('offer-action').textContent=state.downloaded?'Установить и перезапустить':'Скачать';
+ $('update-download').hidden=!state.updates&&!state.availableVersion;
+ $('update-install').hidden=!state.updates&&!state.downloaded;
  showProgress(state.progress);
  const a=state.account;$('signed-in').hidden=!a;$('signed-out').hidden=!!a;const m=$('memory') as HTMLInputElement;m.max=state.budget.max;m.value=String(state.memory);$('memory-value').textContent=`${state.memory} ГБ`;if(a){$('profile-name').textContent=a.nickname;$('verify-box').hidden=a.verified;}}
 function showProgress(info:TransferInfo|null){
@@ -100,10 +106,12 @@ form('auth-form',async data=>{
  } finally {button.disabled=false;}
 });
 form('verify-form',data=>call('auth',{action:'verify',data}));
-for(const [id,channel,value] of [['select-pack','select-pack',undefined],['map','map',undefined],['folder','folder',undefined],['diagnostics','diagnostics',undefined],['update-check','update','check'],['update-download','update','download'],['update-install','update','install']] as const)$(id).onclick=()=>void action(()=>call(channel,value));
+for(const [id,channel,value] of [['select-pack','select-pack',undefined],['map','map',undefined],['folder','folder',undefined],['diagnostics','diagnostics',undefined],['release-page','update','releases'],['update-download','update','download'],['update-install','update','install']] as const)$(id).onclick=()=>void action(()=>call(channel,value));
 for(const [id,kind] of [['resend','resend'],['logout','logout'],['revoke','revoke-all']])$(id!).onclick=()=>void action(()=>call('auth',{action:kind,data:{}}));
 $('skin').onclick=()=>void action(async()=>{await call('skin',($('skin-model') as HTMLSelectElement).value);notice('Скин сохранён. Перезапусти игру, чтобы обновить его.');});
 $('memory').onchange=()=>void action(()=>call('memory',Number(($('memory') as HTMLInputElement).value)));
 $('play').onclick=()=>void action(async()=>{if(!state.account){tab('profile');throw new Error('Войдите или создайте аккаунт');}const b=$('play') as HTMLButtonElement;b.disabled=true;try{await call('play');}finally{b.disabled=false;}});
-void refresh().catch(e=>notice(e.message));
+$('update-check').onclick=()=>void action(async()=>{const result=await call('update','check');notice(typeof result==='string'?result:'Проверка обновлений завершена.');});
+$('offer-action').onclick=()=>void action(()=>call('update',state.downloaded?'install':'download'));
+void refresh().then(async()=>{await call('update','check');await refresh();}).catch(()=>{});
 export {};

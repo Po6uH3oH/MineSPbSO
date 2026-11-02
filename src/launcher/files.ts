@@ -31,7 +31,7 @@ export function verifyManifest(envelope:string,key:string,minSequence=0):Manifes
 }
 export async function hashFile(file:string,algorithm='sha256'){const h=createHash(algorithm);for await(const b of createReadStream(file))h.update(b);return h.digest('hex');}
 export async function atomicJson(file:string,data:unknown){const temp=file+'.tmp';const h=await open(temp,'w');try{await h.writeFile(JSON.stringify(data,null,2));await h.sync();}finally{await h.close();}await rename(temp,file);}
-export async function download(file:z.infer<typeof fileSchema>,destination:string, report:(bytes:number)=>void=()=>{}, fetchFile:typeof fetch=fetch) {
+export async function download(file:Pick<z.infer<typeof fileSchema>,'url'|'size'|'sha256'> & Partial<z.infer<typeof fileSchema>>,destination:string, report:(bytes:number)=>void=()=>{}, fetchFile:typeof fetch=fetch) {
  await mkdir(path.dirname(destination),{recursive:true});
  if(await hashFile(destination).catch(()=>null)===file.sha256)return;
  const part=destination+'.part';

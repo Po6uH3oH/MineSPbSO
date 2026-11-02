@@ -42,6 +42,9 @@ importers:
       fastify:
         specifier: ^5.12.7
         version: 5.12.7
+      nbtify:
+        specifier: 2.2.0
+        version: 2.2.0
       nodemailer:
         specifier: ^10.3.1
         version: 10.3.1
@@ -1327,6 +1330,13 @@ packages:
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+
+  mutf-8@1.2.5:
+    resolution: {integrity: sha512-Il364z6+PAcwzwv8f9Cu7mVv/vvb5H+6rfeuphlknDTbA5KUgbzkR48s0mVL1zYjTK6rUYos3PE+R3UZsDduUw==}
+
+  nbtify@2.2.0:
+    resolution: {integrity: sha512-xlMI29ZAB4ZCBJRnoa+L8al8uKMTLSwrcx13LbdhFLc3KwJb0sWS4/OcKEN2UcjQOVNyk+CqDWfYvPLOo8of/g==}
+    hasBin: true
 
   node-abi@4.40.0:
     resolution: {integrity: sha512-GuvqvtrOk+AC27RidBxBsMzVNkwNl7PjHgc4NXbmdvSVLgIUjpaqcG1FjNRYnt2Yn9Ytq+Ln37XsBaglUcte/w==}
@@ -3160,6 +3170,12 @@ snapshots:
       minimist: 1.2.8
 
   ms@2.1.3: {}
+
+  mutf-8@1.2.5: {}
+
+  nbtify@2.2.0:
+    dependencies:
+      mutf-8: 1.2.5
 
   node-abi@4.40.0:
     dependencies:

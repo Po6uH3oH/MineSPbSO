@@ -10,9 +10,9 @@ export async function createTesterBridge(keys:string, distribution:string, apiPo
     try {
       const url=new URL(req.url??'/','http://localhost');
       const blob=/^\/packs\/files\/([a-f0-9]{64})$/.exec(url.pathname);
-      if (url.pathname.startsWith('/packs/')){
+      if (url.pathname.startsWith('/packs/') || url.pathname==='/launcher/current.json'){
         if(req.method!=='GET'&&req.method!=='HEAD'){res.writeHead(405).end();return;}
-        const file=blob?path.join(distribution,'files',blob[1]!):url.pathname==='/packs/current.json'?path.join(distribution,'current.json'):undefined;
+        const file=url.pathname==='/launcher/current.json'?path.join(distribution,'launcher.json'):blob?path.join(distribution,'files',blob[1]!):url.pathname==='/packs/current.json'?path.join(distribution,'current.json'):undefined;
         const stat=file && await lstat(file).catch(()=>null);
         if(!stat || !stat.isFile()){res.writeHead(404).end();return;}
         const range=req.headers.range;

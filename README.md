@@ -1,4 +1,4 @@
-# MineSPbSO 0.2.0
+# MineSPbSO 0.2.1
 
 Лаунчер сообщества для Windows x64. Устанавливает Minecraft Java 1.21.1, Java 21, NeoForge 21.1.256 и проверенную сборку. Кнопка «Играть» подключает к тестовому серверу с ником подтверждённого аккаунта.
 
@@ -24,3 +24,5 @@ node scripts/verify-release.mjs
 Если Corepack отсутствует, установите его либо pnpm версии из `packageManager`. Для запуска разработки после сборки: `corepack pnpm dev`. Настройки сервиса находятся в `.env.local`, лаунчера — в `config/launcher.local.json` (пример рядом). Установщик использует config/launcher.tester.json с публичными ключами тестовой сети, а при его отсутствии — launcher.example.json.
 
 Итоги: [проверки и ограничения](docs/VERIFICATION.md), [план](docs/PLAN.md), [архитектура](docs/ARCHITECTURE.md).
+С версии 0.2.1 сервер виден в списке Minecraft после отключения. [Обновления лаунчера, подготовка канала и проверка Defender](docs/LAUNCHER-UPDATES.md).
+

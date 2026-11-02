@@ -9,6 +9,7 @@ import { mkdir,readFile,writeFile,link,cp } from 'node:fs/promises';
 import path from 'node:path';
 import type { AddressInfo } from 'node:net';
 import { _electron as electron } from 'playwright';
+import {read as readNBT} from 'nbtify';
 import { PNG } from 'pngjs';
 import { database,migrate } from '../src/service/db.js';
 import { createService } from '../src/service/app.js';
@@ -98,7 +99,7 @@ try{
    if(await page.locator('#notice').isVisible())throw new Error(await page.locator('#notice').innerText());
    const log=await readFile(path.join(data,'instance/game/logs/latest.log'),'utf8').catch(()=>'');
    if(/Couldn't connect to server|Can't connect to server|AnnotatedSocketException: Permission denied: getsockopt/.test(log))throw new Error('Клиент не смог подключиться к игровому серверу');
-   if(log.includes('Connecting to 127.0.0.1, ') && /joined the game|Loaded \d+ advancements|Received client config|Connected to server|Получено достижений|присоединился к игре/i.test(log)){
+   if(log.includes('Connecting to 127.83.80.1, ') && /joined the game|Loaded \d+ advancements|Received client config|Connected to server|Получено достижений|присоединился к игре/i.test(log)){
      const status=await queryServer('127.0.0.1',mc.port);joined=!!status.players?.online;
    }
    if(joined && counts.textures)break;
@@ -114,6 +115,11 @@ try{
  console.log('Duplicate login rejected before evicting the genuine player');
  await db.query('UPDATE accounts SET banned=true WHERE nickname=$1',[account.nickname]);
  await until(async()=>!(await listed())&&(await queryServer('127.0.0.1',mc.port)).players?.online===0,'Заблокированный игрок остался на сервере');
+ const servers=(await readNBT<any>(await readFile(path.join(data,'instance/game/servers.dat')))).data.servers;
+ const saved=servers.find((s:any)=>s.name==='MineSPbSO' && !Number(s.hidden));
+ assert.ok(saved && /^127\.83\.80\.1:[0-9]+$/.test(saved.ip));
+ assert.ok((await queryServer('127.83.80.1',Number(saved.ip.split(':')[1]))).version);
+ console.log('Saved visible multiplayer entry responds after disconnect');
  await app.evaluate(()=>{(globalThis as any).smokeJava?.kill();});
  await db.query('UPDATE accounts SET banned=false WHERE nickname=$1',[account.nickname]);await until(listed,'Вайт-лист не восстановился');
  const tunnel=await startTunnel('127.0.0.1',mc.gatewayPort,cfg.apiCA);

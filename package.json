@@ -1,6 +1,6 @@
 {
   "name": "community-smp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "main": "dist/app/main.cjs",
@@ -29,6 +29,7 @@
     "argon2": "^0.45.1",
     "electron-updater": "^6.8.11",
     "fastify": "^5.12.7",
+    "nbtify": "2.2.0",
     "nodemailer": "^10.3.1",
     "pg": "^8.23.1",
     "pngjs": "^7.0.0",

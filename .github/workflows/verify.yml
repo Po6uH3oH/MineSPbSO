@@ -26,6 +26,9 @@ jobs:
       - run: pnpm build
       - run: pnpm exec electron-builder --win nsis --x64 --publish never
       - run: node scripts/verify-release.mjs
+      - name: Scan exact installer with Microsoft Defender
+        run: ./scripts/scan-release.ps1 -Installer (Get-Item release/*-Setup.exe).FullName
+      - run: pnpm exec tsx scripts/packaged-smoke.ts
       - run: Copy-Item mods/build/libs/community-gate-0.2.0.jar release/
       - uses: actions/upload-artifact@v4
         with:

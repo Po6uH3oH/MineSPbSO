@@ -5,6 +5,7 @@ directories:
   app: dist/app
 files:
   - '**/*'
+  - '!node_modules/**'
 extraResources:
   - from: dist/launcher-config.json
     to: launcher-config.json
@@ -17,6 +18,7 @@ win:
 nsis:
   oneClick: false
   perMachine: false
+  packElevateHelper: false
   allowToChangeInstallationDirectory: true
   deleteAppDataOnUninstall: false
 publish: null

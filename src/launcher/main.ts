@@ -1,4 +1,5 @@
 import { app,BrowserWindow,ipcMain,safeStorage,shell,dialog,Menu } from 'electron';
+import {verifiedInstaller,newer,releases} from './launcher-updates.js';
 import { autoUpdater } from 'electron-updater';
 import { readFile,writeFile,mkdir,unlink } from 'node:fs/promises';
 import path from 'node:path';
@@ -9,8 +10,9 @@ import { cacheArchive } from './tester-release.js';
 import type { Transfer } from './progress.js';
 import { z } from 'zod';
 import { configSchema,trustedUrl } from './config.js';
-import { acquireLock,verifyManifest,installPack,atomicJson } from './files.js';
+import { acquireLock,verifyManifest,installPack,atomicJson,download,hashFile,safePath } from './files.js';
 import { installGame,launchGame,memoryBudget } from './game.js';
+import {gameLoopback,saveCommunityServer} from './saved-server.js';
 import { withCommunityGate } from './gate.js';
 import { startBroker,startTunnel,checkGateway } from './tunnel.js';
 import { importLocalPack } from './local-pack.js';
@@ -67,7 +69,9 @@ win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('
 app.on('second-instance',()=>{if(win.isMinimized())win.restore();win.focus();});
 win.on('close',e=>{if(busy){e.preventDefault();status('Игра или установка ещё работает. Закройте игру перед выходом из лаунчера.');}});
 function handler(name:string,fn:(value:any)=>Promise<any>){ipcMain.handle(name,async(event,value)=>{if(event.sender!==win.webContents||event.senderFrame!==win.webContents.mainFrame)throw new Error('Недопустимый запрос');try{return {ok:true,value:await fn(value)};}catch(e:any){return {ok:false,error:e.message??'Не удалось выполнить действие'};}});}
-handler('state',async()=>({name:config.name,news:config.news,stage,memory,localPack,host,tester,progress:progressValue,remotePack:!!config.testerPackKey,budget:memoryBudget(),account:access?await authenticated('/me').catch(()=>null):null,hasMap:tester||!!config.blueMapUrl,updates:!!config.updateUrl&&config.signedUpdates}));
+let candidate:ReturnType<typeof verifiedInstaller>|undefined,downloaded=false,updateWork=false;
+const nativeUpdates=!!config.updateUrl&&config.signedUpdates;
+handler('state',async()=>({name:config.name,news:config.news,stage,memory,localPack,host,tester,progress:progressValue,remotePack:!!config.testerPackKey,budget:memoryBudget(),account:access?await authenticated('/me').catch(()=>null):null,hasMap:tester||!!config.blueMapUrl,updates:nativeUpdates,version:app.getVersion(),availableVersion:candidate?.version,downloaded}));
 handler('auth',async raw=>{
  const v=z.object({action:z.enum(['login','register','verify','forgot','reset','resend','logout','revoke-all']),data:z.record(z.string(),z.unknown()).default({})}).parse(raw);
  if(v.action==='login'){remember=v.data.remember===true;const r=await request('/auth/login',{email:v.data.email,password:v.data.password});access=r.access;refresh=r.refresh;await saveSession();return r.account;}
@@ -112,7 +116,7 @@ handler('select-pack',async()=>{
  await saveSettings();
 });
 handler('play',async()=>{
- if(busy)throw new Error('Игра или установка уже запущена');busy=true;let unlock:(()=>Promise<void>)|undefined,broker:Awaited<ReturnType<typeof startBroker>>|undefined,tunnel:Awaited<ReturnType<typeof startTunnel>>|undefined;
+ if(busy||updateWork)throw new Error('Игра или установка уже запущена');busy=true;let unlock:(()=>Promise<void>)|undefined,broker:Awaited<ReturnType<typeof startBroker>>|undefined,tunnel:Awaited<ReturnType<typeof startTunnel>>|undefined;
  let skins:Awaited<ReturnType<typeof skinEndpoint>>|undefined;
  const cleanup=async()=>{skins?.close();skins=undefined;broker?.close();broker=undefined;tunnel?.close();tunnel=undefined;const release=unlock;unlock=undefined;if(release)await release();busy=false;gameProcess=undefined;};
  try{
@@ -149,16 +153,48 @@ handler('play',async()=>{
   const text=await response.text();if(text.length>3_000_000)throw new Error('Манифест слишком велик');const manifest=verifyManifest(text,config.manifestPublicKey,current.sequence??0);
   await installGame(root,status,undefined,progress);await installPack(root,await withCommunityGate(root,manifest),'client',status,[],progress);await configureSkins(root,config.apiUrl);await atomicJson(path.join(root,'trusted-sequence.json'),{sequence:manifest.sequence});
   }
-  tunnel=await openGameTunnel();
+  tunnel=await startTunnel(...gatewayArgs(),gameLoopback);
+  await saveCommunityServer(root,config.name,tunnel.port);
   broker=await startBroker(challenge=>authenticated('/join/ticket',{challenge}));
-  status('Запускаем игру');gameProcess=await launchGame(root,profile,tunnel.port,{...broker.env,SMP_GAME_PORT:String(tunnel.port)},memory);
+  status('Запускаем игру');gameProcess=await launchGame(root,profile,gameLoopback+':'+tunnel.port,{...broker.env,SMP_GAME_PORT:String(tunnel.port)},memory);
   gameProcess.stdout?.resume();gameProcess.stderr?.resume();
   gameProcess.once('error',()=>{status('Не удалось запустить Java');void cleanup();});
   gameProcess.once('exit',(code)=>{status(code===0?'Игра закрыта':'Игра завершилась с ошибкой. Проверьте журнал в папке игры.');void cleanup();});return true;
  }catch(e){await cleanup();status('Не удалось запустить игру — можно повторить попытку');throw e;}
 });
 if(config.updateUrl&&config.signedUpdates){trustedUrl(config.updateUrl);autoUpdater.setFeedURL({provider:'generic',url:config.updateUrl});autoUpdater.autoDownload=false;autoUpdater.autoInstallOnAppQuit=false;autoUpdater.on('error',()=>status('Не удалось проверить обновление лаунчера'));autoUpdater.on('update-available',()=>status('Доступно обновление лаунчера'));autoUpdater.on('update-downloaded',()=>status('Обновление скачано. Можно установить.'));}
-handler('update',async action=>{if(!config.updateUrl||!config.signedUpdates)throw new Error('Подписанные обновления ещё не настроены');if(busy)throw new Error('Сначала закройте игру');if(action==='check')return !!await autoUpdater.checkForUpdates();if(action==='download'){await autoUpdater.downloadUpdate();return true;}if(action==='install'){autoUpdater.quitAndInstall();return true;}throw new Error('Неизвестное действие');});
+handler('update',async action=>{
+ if(action==='releases'){
+   await shell.openExternal(candidate?releases+'/tag/tester-v'+candidate.version:releases);return;
+ }
+ if(!nativeUpdates){
+   if(updateWork||busy)throw new Error('Дождись завершения установки или закрой игру.');
+   updateWork=true;
+   try{
+     if(action==='check'){
+       const r=await fetchFile(config.apiUrl+'/launcher/current.json',{signal:AbortSignal.timeout(8000)});
+       if(r.status===404){candidate=undefined;downloaded=false;return 'Владелец ещё не опубликовал обновление в канале лаунчера. Выпуски доступны на GitHub.';}
+       if(!r.ok)throw new Error('Не удалось проверить обновления лаунчера.');
+       const meta=verifiedInstaller(await r.json(),config.testerPackKey||config.manifestPublicKey);
+       if(meta.sha256!==candidate?.sha256)downloaded=false;
+       candidate=newer(meta.version,app.getVersion())?meta:undefined;
+       return candidate?'Доступна версия '+candidate.version:'Установлена актуальная версия '+app.getVersion()+'.';
+     }
+     if(!candidate)throw new Error('Сначала проверь наличие новой версии.');
+     const file=await safePath(app.getPath('userData'),'updates/MineSPbSO-'+candidate.version+'-Setup.exe');
+     if(action==='download'){
+       await download({...candidate,url:config.apiUrl+'/packs/files/'+candidate.sha256},file,bytes=>progress('Обновление лаунчера',bytes,candidate!.size),fetchFile);
+       downloaded=true;status('Обновление скачано и проверено.');return 'Установщик готов.';
+     }
+     if(action==='install'){
+       if(!downloaded||await hashFile(file)!==candidate.sha256){downloaded=false;throw new Error('Нужно повторно скачать обновление.');}
+       const error=await shell.openPath(file);if(error)throw new Error(error);
+       app.quit();return;
+     }
+     throw new Error('Неизвестное действие');
+   }finally{updateWork=false;}
+ }
+ if(busy)throw new Error('Сначала закройте игру');if(action==='check')return !!await autoUpdater.checkForUpdates();if(action==='download'){await autoUpdater.downloadUpdate();return true;}if(action==='install'){autoUpdater.quitAndInstall();return true;}throw new Error('Неизвестное действие');});
 await win.loadFile(path.join(__dirname,'index.html'));
 app.on('window-all-closed',()=>app.quit());
 }

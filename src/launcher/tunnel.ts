@@ -17,7 +17,8 @@ export async function checkGateway(host:string,port:number,ca?:string){
    socket.once('close',()=>reject(new Error('Игровой TLS-шлюз закрыл соединение.')));
  });
 }
-export async function startTunnel(host:string,port:number,ca?:string) {
+export async function startTunnel(host:string,port:number,ca?:string,localHost="127.0.0.1") {
+ if(!['127.0.0.1','127.83.80.1'].includes(localHost))throw new Error('Недопустимый адрес локального туннеля');
  const sockets=new Set<net.Socket>();
  const server=net.createServer(local=>{
   // The game only ever sees loopback. DNS and certificate identity are checked here.
@@ -26,7 +27,7 @@ export async function startTunnel(host:string,port:number,ca?:string) {
   remote.once('secureConnect',()=>{local.pipe(remote);remote.pipe(local);local.resume();});
   local.on('close',()=>remote.destroy());remote.on('close',()=>local.destroy());
  });
- await new Promise<void>((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});
+ await new Promise<void>((resolve,reject)=>{server.once('error',reject);server.listen(0,localHost,resolve);});
  return {port:(server.address() as net.AddressInfo).port,close:()=>{for(const s of sockets)s.destroy();server.close();}};
 }
 export async function startBroker(issue:(challenge:string)=>Promise<{ticket:string}>) {
