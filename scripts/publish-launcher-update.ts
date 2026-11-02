@@ -1,4 +1,4 @@
-import {createPrivateKey,createPublicKey,sign} from 'node:crypto';
+import {createPrivateKey,sign} from 'node:crypto';
 import {copyFile,mkdir,readFile,rename,stat} from 'node:fs/promises';
 import path from 'node:path';
 import {hashFile,atomicJson} from '../src/launcher/files.js';
@@ -22,4 +22,3 @@ if(await hashFile(dest+'.incoming')!==sha256)throw new Error('Ошибка ко�
 await rename(dest+'.incoming',dest);
 await atomicJson(path.join(dist,'launcher.json'),envelope);
 console.log('Опубликовано в локальном канале обновлений:',version,sha256);
-

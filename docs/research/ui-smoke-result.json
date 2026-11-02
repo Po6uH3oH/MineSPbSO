@@ -1,4 +1,7 @@
 {
+  "updateOffer": true,
+  "updateDownload": true,
+  "tamperedInstallerBlocked": true,
   "registration": true,
   "testMailCallback": true,
   "passwordRecovery": true,
