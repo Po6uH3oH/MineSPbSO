@@ -138,7 +138,11 @@ try{
    console.log('API outage denied new login despite persisted whitelist');
  }finally{spoof?.kill();fakeBroker.close();tunnel.close();}
 }finally{
- if(app){await app.evaluate(()=>{(globalThis as any).smokeJava?.kill();}).catch(()=>{});await new Promise(resolve=>setTimeout(resolve,800));app.process().kill();}
+ if(app){
+   const closed=app.waitForEvent('close',{timeout:15000});
+   await app.evaluate(({app:desktop})=>{(globalThis as any).smokeJava?.kill();setTimeout(()=>desktop.exit(0),100);}).catch(()=>{});
+   await closed;
+ }
  if(backend)await backend.close();
  bridge.closeAllConnections();bridge.close();await api.close();await db.close();
 }
