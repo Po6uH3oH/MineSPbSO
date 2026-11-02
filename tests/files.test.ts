@@ -43,3 +43,35 @@ test('повреждённая загрузка отклоняется; част
  const dest=path.join(root,'download');const file={path:'mods/file.jar',url:`http://127.0.0.1:${(server.address() as any).port}/file`,size:bytes.length,sha256:digest(bytes),side:'both' as const,policy:'managed' as const,required:true,license:'test',source:'https://example.org'};
  try{await writeFile(dest+'.part',bytes.subarray(0,5));await download(file,dest);assert.equal(ranges,1);assert.equal(await readFile(dest,'utf8'),bytes.toString());corrupt=true;await assert.rejects(()=>download(file,path.join(root,'bad')),/сумма/);}finally{server.close();}
 });
+
+test('старая блокировка после аварии восстанавливается, живой владелец защищён',async()=>{
+ const root=await mkdtemp(path.join(os.tmpdir(),'MineSPbSO lock ')),file=path.join(root,'operation.lock');
+ await writeFile(file,String(process.pid));
+ await assert.rejects(()=>acquireLock(root),/используется/);
+ await writeFile(file,'2147483647');const unlock=await acquireLock(root);
+ try{await assert.rejects(()=>acquireLock(root));}finally{await unlock();}
+ assert.equal(await lstat(file).catch(()=>null),null);
+});
+test('очистка удаляет только загруженные объекты и сохраняет игровые файлы',async()=>{
+ const {clearDownloadCache}=await import('../src/launcher/maintenance.js');
+ const root=await mkdtemp(path.join(os.tmpdir(),'MineSPbSO cache '));
+ for(const dir of ['cache','archives','game'])await mkdir(path.join(root,dir));
+ const hash='a'.repeat(64);
+ for(const file of ['cache/'+hash,'archives/'+hash+'.zip.part','cache/мой файл','game/options.txt'])await writeFile(path.join(root,file),'keep');
+ assert.equal(await clearDownloadCache(root),2);
+ for(const file of ['cache/мой файл','game/options.txt'])assert.equal(await readFile(path.join(root,file),'utf8'),'keep');
+});
+
+test('Windows защищает оставшийся игровой процесс после закрытия лаунчера',{skip:process.platform!=='win32'},async()=>{
+ const {copyFile,rm}=await import('node:fs/promises');
+ const {spawn}=await import('node:child_process');
+ const {once}=await import('node:events');
+ const root=await mkdtemp(path.join(os.tmpdir(),'MineSPbSO orphan '));
+ const bin=path.join(root,'runtime','bin'),java=path.join(bin,'java.exe');
+ await mkdir(bin,{recursive:true});await copyFile(process.execPath,java);
+ await writeFile(path.join(root,'operation.lock'),'MineSPbSO-v2');
+ const child=spawn(java,['-e','setInterval(()=>{},60000)'],{windowsHide:true});
+ const exited=once(child,'exit');await once(child,'spawn');
+ try{await assert.rejects(()=>acquireLock(root),/Java/);}finally{child.kill();await exited;}
+ const release=await acquireLock(root);await release();await rm(root,{recursive:true});
+});

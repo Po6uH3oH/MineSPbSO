@@ -1,3 +1,3 @@
 import { contextBridge,ipcRenderer } from 'electron';
-const channels=new Set(['state','auth','memory','folder','map','skin','diagnostics','play','update','select-pack','remote-pack','server-status','host','check-network']);
+const channels=new Set(['logging','open-logs','maintenance','state','auth','memory','folder','map','skin','diagnostics','play','update','select-pack','remote-pack','server-status','host','check-network']);
 contextBridge.exposeInMainWorld('smp',{call:(channel:string,value:unknown)=>{if(!channels.has(channel))throw new Error('Invalid channel');return ipcRenderer.invoke(channel,value);},onProgress:(callback:(value:unknown)=>void)=>{ipcRenderer.on('progress',(_e,v)=>callback(v));},onStatus:(callback:(s:string)=>void)=>{ipcRenderer.on('status',(_e,s)=>callback(s));}});

@@ -18,12 +18,13 @@ import { startBroker,startTunnel,checkGateway } from './tunnel.js';
 import { importLocalPack } from './local-pack.js';
 import { configureSkins } from './skins.js';
 
+import {clearDownloadCache,createJournal} from './maintenance.js';
 async function main(){
 if(!app.isPackaged&&process.env.SMP_DEV_USERDATA)app.setPath('userData',path.resolve(process.env.SMP_DEV_USERDATA));
 if(!app.requestSingleInstanceLock()){app.quit();return;}
 let win:BrowserWindow,access='',refresh='',remember=false,busy=false,memory=4,updating:Promise<void>|undefined;
 let stage='Готов к работе';const events:{time:string,event:string}[]=[];
-const status=(text:string)=>{progressValue=null;win?.webContents.send('progress',null);stage=text;events.push({time:new Date().toISOString(),event:text});if(events.length>100)events.shift();win?.webContents.send('status',text);};
+const status=(text:string)=>{progressValue=null;win?.webContents.send('progress',null);stage=text;if(logging)void journal(text);events.push({time:new Date().toISOString(),event:text});if(events.length>100)events.shift();win?.webContents.send('status',text);};
 await app.whenReady();
 Menu.setApplicationMenu(null);
 const root=path.join(app.getPath('userData'),'instance');await mkdir(root,{recursive:true});
@@ -43,6 +44,8 @@ const tokenPath=path.join(app.getPath('userData'),'session.bin');
 let localPack = '';
 const settingsFile=path.join(app.getPath('userData'),'settings.json');
 const settings=JSON.parse(await readFile(settingsFile,'utf8').catch(()=>'{}'));
+const logFolder=path.join(app.getPath('userData'),'launcher-logs');
+const journal=createJournal(logFolder);let logging=settings.logging===true;
 memory=z.number().int().min(4).max(10).catch(4).parse(settings.memory);
 localPack=z.string().catch('').parse(settings.localPack);
 const isOwner=Object.values(os.networkInterfaces()).flat().some(n=>n?.address===config.testerHost);
@@ -53,7 +56,7 @@ async function protectedStatus(){
  const channel=await openGameTunnel();
  try{return await queryServer('127.0.0.1',channel.port);}finally{channel.close();}
 }
-const saveSettings=()=>atomicJson(settingsFile,{memory,localPack,host});
+const saveSettings=()=>atomicJson(settingsFile,{memory,localPack,host,logging});
 
 async function saveSession(){if(remember&&refresh){if(!safeStorage.isEncryptionAvailable())throw new Error('Защищённое хранилище Windows недоступно');await writeFile(tokenPath,safeStorage.encryptString(refresh));}else await unlink(tokenPath).catch(()=>{});}
 async function request(route:string,body?:unknown,token?:string){
@@ -68,16 +71,27 @@ win=new BrowserWindow({show:process.env.SMP_TEST_HEADLESS!=='1',width:1060,heigh
 win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',e=>e.preventDefault());
 app.on('second-instance',()=>{if(win.isMinimized())win.restore();win.focus();});
 win.on('close',e=>{if(busy){e.preventDefault();status('Игра или установка ещё работает. Закройте игру перед выходом из лаунчера.');}});
-function handler(name:string,fn:(value:any)=>Promise<any>){ipcMain.handle(name,async(event,value)=>{if(event.sender!==win.webContents||event.senderFrame!==win.webContents.mainFrame)throw new Error('Недопустимый запрос');try{return {ok:true,value:await fn(value)};}catch(e:any){return {ok:false,error:e.message??'Не удалось выполнить действие'};}});}
+function handler(name:string,fn:(value:any)=>Promise<any>){ipcMain.handle(name,async(event,value)=>{if(event.sender!==win.webContents||event.senderFrame!==win.webContents.mainFrame)throw new Error('Недопустимый запрос');try{return {ok:true,value:await fn(value)};}catch(e:any){if(logging)void journal('Ошибка операции '+name+' · '+(/^(ENOENT|EACCES|EPERM|ENOSPC|EBUSY|ECONNRESET|ETIMEDOUT)$/.test(e.code)?e.code:e.status>=400&&e.status<600?'HTTP '+Number(e.status):'см. сообщение в окне'));return {ok:false,error:e.message??'Не удалось выполнить действие'};}});}
 let candidate:ReturnType<typeof verifiedInstaller>|undefined,downloaded=false,updateWork=false;
 const nativeUpdates=!!config.updateUrl&&config.signedUpdates;
-handler('state',async()=>({name:config.name,news:config.news,stage,memory,localPack,host,tester,progress:progressValue,remotePack:!!config.testerPackKey,budget:memoryBudget(),account:access?await authenticated('/me').catch(()=>null):null,hasMap:tester||!!config.blueMapUrl,updates:nativeUpdates,version:app.getVersion(),availableVersion:candidate?.version,downloaded}));
+handler('state',async()=>({name:config.name,news:config.news,stage,memory,localPack,host,logging,tester,progress:progressValue,remotePack:!!config.testerPackKey,budget:memoryBudget(),account:access?await authenticated('/me').catch(()=>null):null,hasMap:tester||!!config.blueMapUrl,updates:nativeUpdates,version:app.getVersion(),availableVersion:candidate?.version,downloaded}));
 handler('auth',async raw=>{
  const v=z.object({action:z.enum(['login','register','verify','forgot','reset','resend','logout','revoke-all']),data:z.record(z.string(),z.unknown()).default({})}).parse(raw);
  if(v.action==='login'){remember=v.data.remember===true;const r=await request('/auth/login',{email:v.data.email,password:v.data.password});access=r.access;refresh=r.refresh;await saveSession();return r.account;}
  if(v.action==='logout'||v.action==='revoke-all'){await authenticated(`/auth/${v.action}`,{});access='';refresh='';remember=false;await saveSession();return null;}
  if(v.action==='resend')return authenticated('/auth/resend',{});
  return request(`/auth/${v.action}`,v.data);
+});
+handler('logging',async value=>{logging=z.boolean().parse(value);await saveSettings();if(logging)await journal('Включён журнал · версия '+app.getVersion());});
+handler('open-logs',async()=>{await mkdir(logFolder,{recursive:true});if(await shell.openPath(logFolder))throw new Error('Не удалось открыть папку журнала.');});
+handler('maintenance',async value=>{
+ const mode=z.enum(['check','clear']).parse(value);
+ if(busy||updateWork)throw new Error('Дождитесь завершения операции или закройте игру.');
+ busy=true;
+ try{const release=await acquireLock(root);try{
+  if(mode==='clear')return 'Удалено файлов кеша: '+await clearDownloadCache(root);
+  return 'Экземпляр свободен. Можно запускать игру.';
+ }finally{await release();}}finally{busy=false;}
 });
 handler('memory',async value=>{memory=z.number().int().min(4).max(memoryBudget().max).parse(value);await saveSettings();return memory;});
 handler('folder',async()=>{await mkdir(path.join(root,'game'),{recursive:true});const e=await shell.openPath(path.join(root,'game'));if(e)throw new Error(e);});
@@ -118,7 +132,8 @@ handler('select-pack',async()=>{
 handler('play',async()=>{
  if(busy||updateWork)throw new Error('Игра или установка уже запущена');busy=true;let unlock:(()=>Promise<void>)|undefined,broker:Awaited<ReturnType<typeof startBroker>>|undefined,tunnel:Awaited<ReturnType<typeof startTunnel>>|undefined;
  let skins:Awaited<ReturnType<typeof skinEndpoint>>|undefined;
- const cleanup=async()=>{skins?.close();skins=undefined;broker?.close();broker=undefined;tunnel?.close();tunnel=undefined;const release=unlock;unlock=undefined;if(release)await release();busy=false;gameProcess=undefined;};
+ let cleaned=false;
+ const cleanup=async()=>{if(cleaned)return;cleaned=true;skins?.close();skins=undefined;broker?.close();broker=undefined;tunnel?.close();tunnel=undefined;const release=unlock;unlock=undefined;try{if(release)await release();}catch{if(logging)await journal('Не удалось удалить отметку запуска');}finally{busy=false;gameProcess=undefined;}};
  try{
   const profile=await authenticated('/me');if(!profile.verified)throw new Error('Сначала подтвердите почту');
   if(!tester && (!config.manifestUrl || !config.manifestPublicKey))throw new Error('Владелец ещё не настроил подписанный серверный выпуск.');
@@ -159,7 +174,7 @@ handler('play',async()=>{
   status('Запускаем игру');gameProcess=await launchGame(root,profile,gameLoopback+':'+tunnel.port,{...broker.env,SMP_GAME_PORT:String(tunnel.port)},memory);
   gameProcess.stdout?.resume();gameProcess.stderr?.resume();
   gameProcess.once('error',()=>{status('Не удалось запустить Java');void cleanup();});
-  gameProcess.once('exit',(code)=>{status(code===0?'Игра закрыта':'Игра завершилась с ошибкой. Проверьте журнал в папке игры.');void cleanup();});return true;
+  gameProcess.once('exit',(code,signal)=>{if(logging)void journal('Java завершилась · код '+code+' · сигнал '+signal);status(code===0?'Игра закрыта':'Игра завершилась с ошибкой. Проверьте журнал в папке игры.');void cleanup();});return true;
  }catch(e){await cleanup();status('Не удалось запустить игру — можно повторить попытку');throw e;}
 });
 if(config.updateUrl&&config.signedUpdates){trustedUrl(config.updateUrl);autoUpdater.setFeedURL({provider:'generic',url:config.updateUrl});autoUpdater.autoDownload=false;autoUpdater.autoInstallOnAppQuit=false;autoUpdater.on('error',()=>status('Не удалось проверить обновление лаунчера'));autoUpdater.on('update-available',()=>status('Доступно обновление лаунчера'));autoUpdater.on('update-downloaded',()=>status('Обновление скачано. Можно установить.'));}

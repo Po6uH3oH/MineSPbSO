@@ -8,6 +8,7 @@ function tab(id:string){for(const s of document.querySelectorAll<HTMLElement>('.
 for(const b of document.querySelectorAll<HTMLButtonElement>('[data-tab]'))b.onclick=()=>tab(b.dataset.tab!);
 async function action(fn:()=>Promise<unknown>){$('notice').hidden=true;try{await fn();await refresh();}catch(e:any){notice(e.message);}}
 async function refresh(){state=await call('state');$('identity').textContent=state.account?.nickname??'Вы не вошли';$('stage').textContent=state.stage;$('pack-source').textContent=state.localPack||(state.remotePack?'Загрузка с сервера':'Сборка не выбрана');$('remote-pack').hidden=!state.remotePack;
+ ($('logging') as HTMLInputElement).checked=state.logging;
  $('host-form').hidden=!state.tester;
  $('check-network').hidden=!state.tester;
  if(document.activeElement!==$('server-host'))($('server-host') as HTMLInputElement).value=state.host;
@@ -115,3 +116,8 @@ $('update-check').onclick=()=>void action(async()=>{const result=await call('upd
 $('offer-action').onclick=()=>void action(()=>call('update',state.downloaded?'install':'download'));
 void refresh().then(async()=>{await call('update','check');await refresh();}).catch(()=>{});
 export {};
+
+$('logging').onchange=()=>void action(()=>call('logging',($('logging') as HTMLInputElement).checked));
+$('open-logs').onclick=()=>void action(()=>call('open-logs'));
+$('check-instance').onclick=()=>void action(async()=>notice(await call('maintenance','check')));
+$('clear-cache').onclick=()=>void action(async()=>{if(confirm('Удалить кеш загрузок? При следующей установке файлы могут скачаться заново.'))notice(await call('maintenance','clear'));});

@@ -60,12 +60,21 @@ try{
  await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=(async()=>({canceled:false,filePaths:[folder]})) as typeof dialog.showOpenDialog;},localPack);
  await page.locator('#select-pack').click();await page.getByText(localPack,{exact:true}).waitFor();
  await page.locator('[data-tab=developers]').click();
+ await page.locator('#logging').check();
+ await writeFile(path.join(data,'instance','operation.lock'),'2147483647');
+ await page.locator('#check-instance').click();await page.getByText('Экземпляр свободен. Можно запускать игру.').waitFor();
+ await mkdir(path.join(data,'instance','cache'),{recursive:true});
+ await writeFile(path.join(data,'instance','cache','a'.repeat(64)),'fixture');
+ page.once('dialog',prompt=>prompt.accept());
+ await page.locator('#clear-cache').click();await page.getByText('Удалено файлов кеша: 1').waitFor();
  await page.locator('#server-host').fill('localhost:123');
  await page.locator('#host-form button').click();await page.getByText('Введите только IP без порта или localhost.').waitFor();
  await page.locator('#server-host').fill('10.99.52.8');await page.locator('#host-form button').click();await page.getByText('Адрес сохранён.').waitFor();
  assert.deepEqual(pageErrors,[]);
  await app.close();app=await electron.launch(options);const second=await app.firstWindow();await second.waitForSelector('#play');
  assert.equal(await second.locator('html').getAttribute('data-theme'),'dark');const after=await second.evaluate(()=>window.smp.call('state'));assert.equal(after.value.account.uuid,before.value.account.uuid);assert.equal(after.value.memory,setting);
+ assert.equal(after.value.logging,true);
+ const logged=await (await import('node:fs/promises')).readFile(path.join(data,'launcher-logs','launcher.log'),'utf8');assert.match(logged,/Ошибка операции host/);for(const secret of [email,password,newPassword,name])assert.ok(!logged.includes(secret));
  assert.equal(after.value.localPack,localPack);assert.equal(after.value.host,'10.99.52.8');
- const report={updateOffer:true,updateDownload:true,tamperedInstallerBlocked:true,registration:true,testMailCallback:true,passwordRecovery:true,darkThemeRestored:true,login:true,emailVerification:true,noFactionRequired:true,missingPackBlocked:true,nodeIsolation:true,sessionRestoredAfterRestart:true,settingsRestoredAfterRestart:true,noApplicationMenu:true,simplifiedNavigation:true,packPickerAndPersistence:true,developerHostValidatedAndSaved:true,noRendererErrors:true};await writeFile('docs/research/ui-smoke-result.json',JSON.stringify(report,null,2));console.log(report);
+ const report={staleLockRepaired:true,cacheCleared:true,loggingRestored:true,updateOffer:true,updateDownload:true,tamperedInstallerBlocked:true,registration:true,testMailCallback:true,passwordRecovery:true,darkThemeRestored:true,login:true,emailVerification:true,noFactionRequired:true,missingPackBlocked:true,nodeIsolation:true,sessionRestoredAfterRestart:true,settingsRestoredAfterRestart:true,noApplicationMenu:true,simplifiedNavigation:true,packPickerAndPersistence:true,developerHostValidatedAndSaved:true,noRendererErrors:true};await writeFile('docs/research/ui-smoke-result.json',JSON.stringify(report,null,2));console.log(report);
 }finally{await app.close();await api.close();await db.close();}

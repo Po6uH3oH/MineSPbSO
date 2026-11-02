@@ -59,7 +59,7 @@ export async function download(file:Pick<z.infer<typeof fileSchema>,'url'|'size'
   }catch(e:any){if(e.code==='ENOSPC')throw new Error('Недостаточно места на диске');if(attempt===2)throw e;}finally{clearTimeout(idleTimer);controller.abort();}
  }
 }
-export async function acquireLock(root:string){await mkdir(root,{recursive:true});const file=path.join(root,'operation.lock');let h;try{h=await open(file,'wx');}catch{throw new Error('Игра или установка уже запущена. После аварии проверьте процессы и удалите operation.lock.');}await h.writeFile(String(process.pid));return async()=>{await h.close();await unlink(file);};}
+export {acquireLock} from './operation.js';
 
 // Directory-level commit. The journal is written before the first rename. Recovery
 // always restores the previous complete mods directory, never guesses partial success.

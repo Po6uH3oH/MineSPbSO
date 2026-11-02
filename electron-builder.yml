@@ -16,6 +16,7 @@ win:
       arch: [x64]
   artifactName: MineSPbSO-${version}-Setup.${ext}
 nsis:
+  include: scripts/uninstall.nsh
   oneClick: false
   perMachine: false
   packElevateHelper: false
