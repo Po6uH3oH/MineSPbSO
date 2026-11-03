@@ -26,3 +26,5 @@ node scripts/verify-release.mjs
 Итоги: [проверки и ограничения](docs/VERIFICATION.md), [план](docs/PLAN.md), [архитектура](docs/ARCHITECTURE.md).
 С версии 0.2.1 сервер виден в списке Minecraft после отключения. [Обновления лаунчера, подготовка канала и проверка Defender](docs/LAUNCHER-UPDATES.md).
 
+
+[Общий запуск Windows и панель аккаунтов владельца](docs/OWNER.md)

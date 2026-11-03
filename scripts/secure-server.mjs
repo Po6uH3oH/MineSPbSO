@@ -45,7 +45,7 @@ if(action==='configure'){
  const java=settings.JAVA_EXE || 'java';
  const args=[];
  if(await lstat(path.join(root,'user_jvm_args.txt')).catch(()=>null))args.push('@user_jvm_args.txt');
- args.push('@'+javaArgs,'nogui');
+ args.push('@'+javaArgs);
  const env={...settings,SMP_API_URL:settings.SMP_API_URL||'http://127.0.0.1:3000',SMP_SERVER_KEY:secret};
  const child=spawn(java,args,{cwd:root,stdio:'inherit',env});
  child.on('error',()=>{console.error('Не удалось запустить Java 21.');process.exitCode=1;});

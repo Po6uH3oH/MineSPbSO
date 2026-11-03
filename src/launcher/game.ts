@@ -1,9 +1,9 @@
 import { importInstalledNeoForge, importNeoForgeCache } from './local-runtime.js';
 import path from 'node:path';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { hashFile } from './files.js';
+import { hashFile,atomicJson } from './files.js';
 import { javaInstancePath } from './windows-instance.js';
 import { noProgress, type Transfer } from './progress.js';
 import os from 'node:os';
@@ -12,7 +12,7 @@ import { getVersionList, resolveMinecraftVersionJsonInstallFile, resolveMinecraf
 
 export function memoryBudget(total=os.totalmem(),free=os.freemem(),requested=4){
  const gib=1024**3,max=Math.max(4,Math.min(10,Math.floor(total/gib-4))),recommended=Math.min(max,Math.max(4,Math.floor(total/gib/2)));
- const selected=Math.max(4,Math.min(max,Math.floor(requested)));
+ const selected=Math.max(3,Math.min(max,Math.floor(requested)));
  return {max,recommended,selected,canLaunch:total>=7.5*gib&&free>=(selected+1.5)*gib};
 }
 async function officialInstaller(folder:MinecraftFolder,root:string) {
@@ -35,6 +35,23 @@ export async function installGame(root:string,status:(s:string)=>void=console.lo
  const folder=MinecraftFolder.from(path.join(javaRoot,'minecraft'));await mkdir(folder.root,{recursive:true});
  let phase = 'Проверяем NeoForge';
  status(phase);
+ const javaPathCached=path.join(javaRoot,'runtime','bin','java.exe');
+ try{
+  const saved=JSON.parse(await readFile(path.join(root,'game-install.json'),'utf8'));
+  if(['1.21.1-21.1.256','1.21.1-neoforge-21.1.256','neoforge-21.1.256'].includes(saved.version)){
+   const resolved=await Version.parse(folder,saved.version);
+   const jar=resolveMinecraftJarInstallFile(resolved);
+   if(jar && resolved.assetIndex){
+    const required=[jar,...resolveLibraryInstallFiles(resolved.libraries,folder)];
+    await Promise.all(required.map(async f=>{const s=await stat(f.path);if(!s.isFile()||!s.size||(f.size&&s.size!==f.size))throw Error();}));
+    await stat(javaPathCached);
+    await stat(path.join(folder.root,'assets','indexes',resolved.assetIndex.id+'.json'));
+    const install={version:saved.version,javaPath:javaPathCached,resourcePath:folder.root};
+    if(saved.javaPath!==install.javaPath||saved.resourcePath!==install.resourcePath)await atomicJson(path.join(root,'game-install.json'),install);
+    return install;
+   }
+  }
+ }catch{/* Missing installation files are repaired by the normal installer. */}
  let version = localProfile ? await importInstalledNeoForge(localProfile, folder.root) : undefined;
  if(!version && installedCache) {
    status('Проверяем установленный NeoForge в кеше Modrinth');
@@ -88,7 +105,7 @@ export function gameLaunchOptions(root:string,installation:{version:string,javaP
  return {...installation,gamePath:path.join(root,'game'),gameProfile:{name:profile.nickname,id:profile.uuid.replaceAll('-','')},accessToken:'0',userType:'legacy',minMemory:1024,maxMemory:memory*1024,extraJVMArgs:['-XX:+UseG1GC'],quickPlayMultiplayer:typeof port==='number'?`127.0.0.1:${port}`:port,extraExecOption:{env:{...process.env,...env},windowsHide:true}};
 }
 export async function launchGame(root:string,profile:{nickname:string,uuid:string},port:number|string|undefined,env:NodeJS.ProcessEnv,memory:number) {
- const budget=memoryBudget(undefined,undefined,memory);if(!budget.canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения; игре нужно от 4 ГБ, также нужен запас для Windows и JVM.');
+ const budget=memoryBudget(undefined,undefined,memory);if(!budget.canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения; игре нужно от 3 ГБ, также нужен запас для Windows и JVM.');
  const installation=JSON.parse(await readFile(path.join(root,'game-install.json'),'utf8'));
  return launch(gameLaunchOptions(await javaInstancePath(root),installation,profile,port,env,budget.selected));
 }

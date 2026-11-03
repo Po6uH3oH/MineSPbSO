@@ -78,6 +78,21 @@ export async function installPack(root:string,m:Manifest,side:'client'|'server',
  await recover(root);const id=createHash('sha256').update(JSON.stringify(m)).digest('hex');
  const stage=await safePath(root,`stage-${id}`);await mkdir(stage,{recursive:true});
  const files=m.files.filter(f=>(f.side===side||f.side==='both')&&(f.required||selectedOptional.includes(f.path)));
+ const installed=JSON.parse(await readFile(path.join(root,'installed.json'),'utf8').catch(()=>'{}'));
+ const expectedMods=files.filter(f=>f.path.startsWith('mods/'));
+ const modsPath=await safePath(root,'game/mods');
+ const currentNames:string[]=await readdir(modsPath).catch(()=>[]);
+ const extras=await readdir(await safePath(root,'addons')).catch((e:NodeJS.ErrnoException)=>{if(e.code==='ENOENT')return [];throw e;});
+ status('Сверяем моды с выпуском');
+ if(installed.sequence===m.sequence&&!extras.length&&currentNames.length===expectedMods.length
+   &&expectedMods.every(f=>currentNames.includes(f.path.slice(5))&&installed.managedFiles?.includes(f.path.slice(5).toLowerCase()))){
+  let intact=true;
+  for(const f of files){
+   const target=await safePath(root,'game/'+f.path);
+   if(f.policy==='default'?!(await lstat(target).catch(()=>null))?.isFile():await hashFile(target).catch(()=>null)!==f.sha256){intact=false;break;}
+  }
+  if(intact)return;
+ }
  const disk=await statfs(root);if(disk.bavail*disk.bsize<files.reduce((s,f)=>s+f.size,0)*2+100*1024*1024)throw new Error('Недостаточно места для безопасного обновления');
  status('Скачиваем сборку');const names=new Set<string>();
  const pending = new Map<string,typeof files[number]>();

@@ -46,7 +46,7 @@ const settingsFile=path.join(app.getPath('userData'),'settings.json');
 const settings=JSON.parse(await readFile(settingsFile,'utf8').catch(()=>'{}'));
 const logFolder=path.join(app.getPath('userData'),'launcher-logs');
 const journal=createJournal(logFolder);let logging=settings.logging===true;
-memory=z.number().int().min(4).max(10).catch(4).parse(settings.memory);
+memory=z.number().int().min(3).max(10).catch(4).parse(settings.memory);
 localPack=z.string().catch('').parse(settings.localPack);
 const isOwner=Object.values(os.networkInterfaces()).flat().some(n=>n?.address===config.testerHost);
 let host=serverTargets(settings.host ?? (isOwner?'localhost':config.testerHost)).host;
@@ -67,7 +67,7 @@ async function renew(){if(!refresh)throw new Error('Войдите в аккау
 async function authenticated(route:string,body?:unknown){try{return await request(route,body,access);}catch(e:any){if(e.status!==401)throw e;await renew();return request(route,body,access);}}
 try{if(safeStorage.isEncryptionAvailable()){refresh=safeStorage.decryptString(await readFile(tokenPath));remember=true;await renew();}}catch{access='';refresh='';}
 let gameProcess:Awaited<ReturnType<typeof launchGame>>|undefined;
-win=new BrowserWindow({show:process.env.SMP_TEST_HEADLESS!=='1',width:1060,height:760,minWidth:800,minHeight:650,backgroundColor:'#f1f6fd',title:config.name,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+win=new BrowserWindow({show:process.env.SMP_TEST_HEADLESS!=='1',width:1060,height:760,minWidth:800,minHeight:650,backgroundColor:'#f1f6fd',title:config.name,icon:path.join(__dirname,'icon.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
 win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',e=>e.preventDefault());
 app.on('second-instance',()=>{if(win.isMinimized())win.restore();win.focus();});
 win.on('close',e=>{if(busy){e.preventDefault();status('Игра или установка ещё работает. Закройте игру перед выходом из лаунчера.');}});
@@ -93,7 +93,7 @@ handler('maintenance',async value=>{
   return 'Экземпляр свободен. Можно запускать игру.';
  }finally{await release();}}finally{busy=false;}
 });
-handler('memory',async value=>{memory=z.number().int().min(4).max(memoryBudget().max).parse(value);await saveSettings();return memory;});
+handler('memory',async value=>{memory=z.number().int().min(3).max(memoryBudget().max).parse(value);await saveSettings();return memory;});
 handler('folder',async()=>{await mkdir(path.join(root,'game'),{recursive:true});const e=await shell.openPath(path.join(root,'game'));if(e)throw new Error(e);});
 let lastChecks:{label:string,ok:boolean,detail:string}[]=[];
 handler('check-network',async()=>{
@@ -154,7 +154,9 @@ handler('play',async()=>{
      const previous=JSON.parse(await readFile(checkpoint,'utf8').catch(()=>'{}'));
      const manifest=verifyManifest(await response.text(),config.testerPackKey,previous.sequence??0);
      await installGame(root,status,undefined,progress,path.join(app.getPath('appData'),'ModrinthApp','meta'));
-     if(manifest.archive){status('Проверяем архив сборки');await cacheArchive(root,manifest,progress,fetchFile);}
+     const legacyConfigs=manifest.files.some(f=>f.path.startsWith('config/'));
+     manifest.files=manifest.files.filter(f=>!f.path.startsWith('config/'));
+     if(manifest.archive&&!legacyConfigs&&!await readFile(path.join(root,'installed.json')).then(()=>true,()=>false)){status('Проверяем архив сборки');await cacheArchive(root,manifest,progress,fetchFile);}
      await installPack(root,await withCommunityGate(root,manifest),'client',status,[],progress,fetchFile);
      await atomicJson(checkpoint,{sequence:manifest.sequence});
    }
@@ -166,6 +168,7 @@ handler('play',async()=>{
   const response=await fetch(trustedUrl(config.manifestUrl,true),{signal:AbortSignal.timeout(30000)});if(!response.ok)throw new Error('Выпуск недоступен');
   const current=JSON.parse(await readFile(path.join(root,'trusted-sequence.json'),'utf8').catch(()=>'{}'));
   const text=await response.text();if(text.length>3_000_000)throw new Error('Манифест слишком велик');const manifest=verifyManifest(text,config.manifestPublicKey,current.sequence??0);
+  manifest.files=manifest.files.filter(f=>!f.path.startsWith('config/'));
   await installGame(root,status,undefined,progress);await installPack(root,await withCommunityGate(root,manifest),'client',status,[],progress);await configureSkins(root,config.apiUrl);await atomicJson(path.join(root,'trusted-sequence.json'),{sequence:manifest.sequence});
   }
   tunnel=await startTunnel(...gatewayArgs(),gameLoopback);

@@ -10,11 +10,11 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
  const call=async(url:string,body:any,token?:string)=>{const r=await app.inject({method:'POST',url,payload:body,headers:token?{authorization:`Bearer ${token}`}:{}});return {status:r.statusCode,...r.json()};};
  const code=()=>mail.at(-1)!.split('\n\n')[1];
  try{
-  assert.equal((await call('/auth/register',{email:'test@example.org',nickname:'Player_One',password:'a strong password'})).status,200);
-  assert.equal((await call('/auth/register',{email:'other@example.org',nickname:'player_one',password:'a strong password'})).status,409);
+  assert.equal((await call('/auth/register',{email:'test@example.org',nickname:'Player_One',password:'12345678'})).status,200);
+  assert.equal((await call('/auth/register',{email:'other@example.org',nickname:'player_one',password:'12345678'})).status,409);
   assert.equal((await call('/server/whitelist',{})).status,401);
   assert.deepEqual((await call('/server/whitelist',{},serverKey)).players,[]);
-  const verify=code();let login=await call('/auth/login',{email:'test@example.org',password:'a strong password'});const original=login.account.uuid;
+  const verify=code();let login=await call('/auth/login',{email:'test@example.org',password:'12345678'});const original=login.account.uuid;
   assert.equal(original,offlineUuid('Player_One'));
   assert.equal((await call('/auth/verify',{token:verify})).status,200);
   assert.equal((await call('/auth/verify',{token:verify})).status,400);
@@ -59,3 +59,5 @@ test('UUID учитывает точный регистр и соответст�
  assert.notEqual(offlineUuid('Notch'),offlineUuid('notch'));
  assert.throws(()=>offlineUuid('../bad'));
 });
+
+test('login throttles repeated attempts',async()=>{const db=await database('pglite:');await migrate(db);const app=await createService({db,serverKey:'test',serverId:'test',publicUrl:'',sendMail:async()=>{}});try{for(let i=0;i<11;i++){const r=await app.inject({method:'POST',url:'/auth/login',payload:{email:'missing@example.org',password:'12345678'}});assert.equal(r.statusCode,i===10?429:401);}}finally{await app.close();await db.close();}});

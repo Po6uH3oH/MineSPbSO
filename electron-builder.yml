@@ -11,11 +11,15 @@ extraResources:
     to: launcher-config.json
 asar: true
 win:
+  icon: build/icon.ico
   target:
     - target: nsis
       arch: [x64]
   artifactName: MineSPbSO-${version}-Setup.${ext}
 nsis:
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
   include: scripts/uninstall.nsh
   oneClick: false
   perMachine: false

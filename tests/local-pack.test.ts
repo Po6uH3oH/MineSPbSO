@@ -17,7 +17,8 @@ test('local pack copies the requested folders and preserves player settings on r
   await writeFile(path.join(source, 'options.txt'), 'original');
   await importLocalPack(source, root, () => {});
   assert.ok(!(await readdir(path.join(root, 'game'))).includes('saves'));
-  for (const folder of ['config', 'resourcepacks', 'datapacks', 'shaderpacks']) {
+  assert.ok(!(await readdir(path.join(root,'game'))).includes('config'));
+  for (const folder of [ 'resourcepacks', 'datapacks', 'shaderpacks']) {
     assert.equal(await readFile(path.join(root, 'game', folder, 'example.txt'), 'utf8'), folder);
   }
   await writeFile(path.join(root, 'game', 'options.txt'), 'player settings');

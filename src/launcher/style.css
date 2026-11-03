@@ -7,3 +7,6 @@ html[data-theme=dark]{color-scheme:dark;background:#111b2a;color:#e4edf8}
 [data-theme=dark] header,[data-theme=dark] article p,[data-theme=dark] .hint,[data-theme=dark] #stage,[data-theme=dark] small,[data-theme=dark] details,[data-theme=dark] .brand span{color:#b6c8df;border-color:#40526a}
 [data-theme=dark] .brand{color:#84b7ff}[data-theme=dark] #notice{background:#392e1d;color:#ffe1a9;border-color:#7b6033}
 #transfer{margin-top:14px;max-width:620px}#transfer label{font-size:13px;overflow-wrap:anywhere}#transfer progress{width:100%;accent-color:#367bce}
+
+#identity { background: transparent; border: 0; box-shadow: none; padding: 0; color: inherit; font: inherit; cursor: pointer; }
+#identity:hover { text-decoration: underline; }

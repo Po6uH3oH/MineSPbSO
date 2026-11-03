@@ -27,7 +27,7 @@ export async function importLocalPack(source: string, root: string, status: (tex
     files.push({ path: relative, sha256, size: stat.size, url: 'https://local.invalid/owner-import', source: 'https://local.invalid/owner-import', license: 'Local owner import; redistribution not approved', required: true, side: 'client', policy: relative.startsWith('mods/') ? 'managed' : 'default' });
   }
   status('Копируем сборку');
-  for (const name of ['mods', 'config', 'resourcepacks', 'datapacks', 'shaderpacks', 'options.txt']) await visit(name);
+  for (const name of ['mods',  'resourcepacks', 'datapacks', 'shaderpacks', 'options.txt']) await visit(name);
   if (!files.some(file => file.path.startsWith('mods/'))) throw new Error('В выбранной папке нет mods/*.jar');
   await installPack(root, await augment({ schema: 1, version: 'local-owner', sequence: 1, minecraft: '1.21.1', neoforge: '21.1.256', expires: '2099-01-01T00:00:00Z', files, allowedAddons: [] }), 'client', status);
 }

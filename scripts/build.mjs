@@ -1,6 +1,7 @@
 import {build} from 'esbuild';
 import {mkdir,copyFile} from 'node:fs/promises';
 await mkdir('dist/app',{recursive:true});
+await copyFile('build/icon.png','dist/app/icon.png');
 await build({entryPoints:['src/launcher/main.ts'],outfile:'dist/app/main.cjs',bundle:true,platform:'node',format:'cjs',target:'node22',external:['electron']});
 await build({entryPoints:['src/launcher/preload.ts'],outfile:'dist/app/preload.cjs',bundle:true,platform:'node',format:'cjs',external:['electron']});
 await build({entryPoints:['src/launcher/renderer.ts'],outfile:'dist/app/renderer.js',bundle:true,platform:'browser',target:'chrome130'});

@@ -40,7 +40,7 @@ async function visit(relative:string){
   const url=base+'/packs/files/'+sha256;
   files.push({path:relative,sha256,size:stat.size,url,source:url,side:'client',required:true,license:'Private test; owner must verify distribution rights',policy:relative.startsWith('mods/')?'managed':'default'});
 }
-for(const root of ['mods','config','resourcepacks','datapacks','shaderpacks','options.txt'])await visit(root);
+for(const root of ['mods','resourcepacks','datapacks','shaderpacks','options.txt'])await visit(root);
 if(!files.some(f=>f.path.startsWith('mods/')))throw new Error('В профиле отсутствуют mods/*.jar');
 const seq=Date.now();
 const manifest:Manifest={schema:1,version:'test-'+seq,sequence:seq,minecraft:'1.21.1',neoforge:'21.1.256',expires:new Date(seq+90*86400000).toISOString(),files,allowedAddons:[]};

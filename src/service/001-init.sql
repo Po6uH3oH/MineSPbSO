@@ -23,3 +23,8 @@ CREATE TABLE IF NOT EXISTS challenges (
 CREATE TABLE IF NOT EXISTS limits (key text PRIMARY KEY, count int NOT NULL, expires timestamptz NOT NULL);
 CREATE TABLE IF NOT EXISTS skin_blobs (hash text PRIMARY KEY, png bytea NOT NULL, created_at timestamptz NOT NULL DEFAULT now());
 ALTER TABLE challenges ADD COLUMN IF NOT EXISTS ticket_session_id uuid REFERENCES sessions(id) ON DELETE SET NULL;
+CREATE TABLE IF NOT EXISTS reserved_nicks (nickname_key text PRIMARY KEY);
+INSERT INTO reserved_nicks SELECT nickname_key FROM accounts ON CONFLICT DO NOTHING;
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS pending boolean NOT NULL DEFAULT false;
+CREATE TABLE IF NOT EXISTS registration_policy (id int PRIMARY KEY CHECK(id=1), mode text NOT NULL CHECK(mode IN ('open','review','closed')));
+INSERT INTO registration_policy VALUES(1,'open') ON CONFLICT DO NOTHING;

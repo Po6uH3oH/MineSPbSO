@@ -121,3 +121,5 @@ $('logging').onchange=()=>void action(()=>call('logging',($('logging') as HTMLIn
 $('open-logs').onclick=()=>void action(()=>call('open-logs'));
 $('check-instance').onclick=()=>void action(async()=>notice(await call('maintenance','check')));
 $('clear-cache').onclick=()=>void action(async()=>{if(confirm('Удалить кеш загрузок? При следующей установке файлы могут скачаться заново.'))notice(await call('maintenance','clear'));});
+
+$('identity').onclick=()=>tab('profile');
