@@ -1,3 +1,4 @@
+import {gamePreferencesSchema,parseJvmArgs,type GamePreferences} from './preferences.js';
 import { importInstalledNeoForge, importNeoForgeCache } from './local-runtime.js';
 import path from 'node:path';
 import { mkdir, readFile, writeFile, stat } from 'node:fs/promises';
@@ -101,11 +102,11 @@ export async function installGame(root:string,status:(s:string)=>void=console.lo
  await writeFile(path.join(root,'game-install.json'),JSON.stringify({version,javaPath,resourcePath:folder.root},null,2));
  return {version,javaPath,resourcePath:folder.root};
 }
-export function gameLaunchOptions(root:string,installation:{version:string,javaPath:string,resourcePath:string},profile:{nickname:string,uuid:string},port:number|string|undefined,env:NodeJS.ProcessEnv,memory:number):LaunchOption {
- return {...installation,gamePath:path.join(root,'game'),gameProfile:{name:profile.nickname,id:profile.uuid.replaceAll('-','')},accessToken:'0',userType:'legacy',minMemory:1024,maxMemory:memory*1024,extraJVMArgs:['-XX:+UseG1GC'],quickPlayMultiplayer:typeof port==='number'?`127.0.0.1:${port}`:port,extraExecOption:{env:{...process.env,...env},windowsHide:true}};
+export function gameLaunchOptions(root:string,installation:{version:string,javaPath:string,resourcePath:string},profile:{nickname:string,uuid:string},port:number|string|undefined,env:NodeJS.ProcessEnv,memory:number,preferences:GamePreferences=gamePreferencesSchema.parse({})):LaunchOption {
+ return {...installation,gamePath:path.join(root,'game'),gameProfile:{name:profile.nickname,id:profile.uuid.replaceAll('-','')},accessToken:'0',userType:'legacy',minMemory:1024,maxMemory:memory*1024,extraJVMArgs:['-XX:+UseG1GC',...parseJvmArgs(preferences.jvmArgs)],resolution:{width:preferences.width,height:preferences.height,fullscreen:preferences.fullscreen},quickPlayMultiplayer:typeof port==='number'?`127.0.0.1:${port}`:port,extraExecOption:{env:{...process.env,...env},windowsHide:true}};
 }
-export async function launchGame(root:string,profile:{nickname:string,uuid:string},port:number|string|undefined,env:NodeJS.ProcessEnv,memory:number) {
+export async function launchGame(root:string,profile:{nickname:string,uuid:string},port:number|string|undefined,env:NodeJS.ProcessEnv,memory:number,preferences:GamePreferences=gamePreferencesSchema.parse({})) {
  const budget=memoryBudget(undefined,undefined,memory);if(!budget.canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения; игре нужно от 3 ГБ, также нужен запас для Windows и JVM.');
  const installation=JSON.parse(await readFile(path.join(root,'game-install.json'),'utf8'));
- return launch(gameLaunchOptions(await javaInstancePath(root),installation,profile,port,env,budget.selected));
+ return launch(gameLaunchOptions(await javaInstancePath(root),installation,profile,port,env,budget.selected,preferences));
 }

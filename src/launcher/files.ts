@@ -6,7 +6,7 @@ import { noProgress, type Transfer } from './progress.js';
 import { z } from 'zod';
 
 export const fileSchema=z.object({path:z.string(),url:z.url(),size:z.number().int().min(0).max(2**31),sha256:z.string().regex(/^[a-f0-9]{64}$/),side:z.enum(['client','server','both']),policy:z.enum(['managed','default']),required:z.boolean(),license:z.string().min(1),source:z.url()});
-export const manifestSchema=z.object({schema:z.literal(1),version:z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),sequence:z.number().int().min(1),minecraft:z.literal('1.21.1'),neoforge:z.literal('21.1.256'),expires:z.iso.datetime(),files:z.array(fileSchema).max(2000),archive:z.object({url:z.url(),size:z.number().int().positive().max(4*1024**3),sha256:z.string().regex(/^[a-f0-9]{64}$/)}).optional(),allowedAddons:z.array(z.string().regex(/^[a-f0-9]{64}$/)).default([])});
+export const manifestSchema=z.object({schema:z.literal(1),version:z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),sequence:z.number().int().min(1),minecraft:z.literal('1.21.1'),neoforge:z.literal('21.1.256'),expires:z.iso.datetime(),files:z.array(fileSchema).max(2000),archive:z.object({url:z.url(),size:z.number().int().positive().max(4*1024**3),sha256:z.string().regex(/^[a-f0-9]{64}$/)}).optional(),graphics:z.object({mods:z.array(z.string()).max(200),basicDistance:z.number().int().min(2).max(32),enhancedDistance:z.number().int().min(2).max(32)}).optional(),allowedAddons:z.array(z.string().regex(/^[a-f0-9]{64}$/)).default([])});
 export type Manifest=z.infer<typeof manifestSchema>;
 export function safeRelative(p:string) {
  if(p.length>220||p.includes('\\')||p.includes(':')||p.startsWith('/')||p.split('/').some(v=>!v||v==='.'||v==='..'||/[. ]$/.test(v)||/^(con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(v)||/[<>"|?*\x00-\x1f]/.test(v)))throw new Error('Недопустимый путь в выпуске');
@@ -26,6 +26,13 @@ export function verifyManifest(envelope:string,key:string,minSequence=0):Manifes
  const seen=new Set<string>();for(const f of m.files){safeRelative(f.path);if(seen.has(f.path.toLowerCase()))throw new Error('Дублирующийся путь');seen.add(f.path.toLowerCase());
   if(!(/^mods\/[^/]+\.jar$/i.test(f.path)&&f.policy==='managed')&&!((/^(config|resourcepacks|datapacks|shaderpacks)\/.+/.test(f.path)||f.path==='options.txt')&&f.policy==='default'))throw new Error('Путь или правило обновления не разрешены');
   const u=new URL(f.url);if(u.protocol!=='https:'&&!(u.protocol==='http:'&&['127.0.0.1','localhost'].includes(u.hostname)))throw new Error('Источник должен использовать HTTPS');
+ }
+ if(m.graphics){
+  if(new Set(m.graphics.mods).size!==m.graphics.mods.length)throw new Error('Дубли в графическом наборе');
+  for(const p of m.graphics.mods){
+   const f=m.files.find(f=>f.path===p);
+   if(!f||f.required||f.side!=='client'||!/^mods\/[^/]+\.jar$/.test(p)||/community-gate/i.test(p))throw new Error('Графический набор должен содержать только необязательные клиентские моды');
+  }
  }
  return m;
 }
@@ -75,7 +82,7 @@ export async function recover(root:string) {
  await unlink(journal);
 }
 export async function installPack(root:string,m:Manifest,side:'client'|'server',status:(s:string)=>void=()=>{},selectedOptional:string[]=[],progress:Transfer=noProgress,fetchFile:typeof fetch=fetch) {
- await recover(root);const id=createHash('sha256').update(JSON.stringify(m)).digest('hex');
+ await recover(root);const id=createHash('sha256').update(JSON.stringify({manifest:m,side,selected:[...selectedOptional].sort()})).digest('hex');
  const stage=await safePath(root,`stage-${id}`);await mkdir(stage,{recursive:true});
  const files=m.files.filter(f=>(f.side===side||f.side==='both')&&(f.required||selectedOptional.includes(f.path)));
  const installed=JSON.parse(await readFile(path.join(root,'installed.json'),'utf8').catch(()=>'{}'));

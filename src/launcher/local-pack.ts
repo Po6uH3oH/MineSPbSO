@@ -1,10 +1,12 @@
+import {profileGraphics} from './profile-graphics.js';
+import {graphicsSelection,applyGraphics} from './graphics.js';
 import path from 'node:path';
 import { copyFile, mkdir, readdir, lstat } from 'node:fs/promises';
 import { hashFile, installPack, safePath, type Manifest } from './files.js';
 
 // A folder explicitly selected by the owner is a local source of executable mods.
 // It is never treated as a signed release suitable for public distribution.
-export async function importLocalPack(source: string, root: string, status: (text: string) => void, augment:(m:Manifest)=>Promise<Manifest>=async m=>m) {
+export async function importLocalPack(source: string, root: string, status: (text: string) => void, augment:(m:Manifest)=>Promise<Manifest>=async m=>m,enhancedGraphics=false) {
   const files: Manifest['files'] = [];
   async function visit(relative: string) {
     const sourceFile = await safePath(source, relative);
@@ -29,5 +31,7 @@ export async function importLocalPack(source: string, root: string, status: (tex
   status('Копируем сборку');
   for (const name of ['mods',  'resourcepacks', 'datapacks', 'shaderpacks', 'options.txt']) await visit(name);
   if (!files.some(file => file.path.startsWith('mods/'))) throw new Error('В выбранной папке нет mods/*.jar');
-  await installPack(root, await augment({ schema: 1, version: 'local-owner', sequence: 1, minecraft: '1.21.1', neoforge: '21.1.256', expires: '2099-01-01T00:00:00Z', files, allowedAddons: [] }), 'client', status);
+  const manifest=await augment(await profileGraphics(source,{ schema: 1, version: 'local-owner', sequence: 1, minecraft: '1.21.1', neoforge: '21.1.256', expires: '2099-01-01T00:00:00Z', files, allowedAddons: [] }));
+  await installPack(root,manifest,'client',status,graphicsSelection(manifest,enhancedGraphics));
+  await applyGraphics(root,manifest,enhancedGraphics);
 }

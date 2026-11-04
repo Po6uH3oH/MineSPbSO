@@ -31,7 +31,7 @@ function readVarInt(data: Buffer, offset: number) {
 export async function queryServer(host: string, port = 48905) {
   const result = z.object({
     version: z.object({name: z.string().max(200)}),
-    players: z.object({online: z.number().int().nonnegative(), max: z.number().int().nonnegative()}).optional(),
+    players: z.object({online: z.number().int().nonnegative(), max: z.number().int().nonnegative(), sample:z.array(z.object({name:z.string().max(64)})).max(1000).optional()}).optional(),
   });
   return new Promise<z.infer<typeof result>>((resolve, reject) => {
     const socket = connect(port, host);

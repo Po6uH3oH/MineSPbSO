@@ -1,3 +1,4 @@
+import {profileGraphics} from '../src/launcher/profile-graphics.js';
 import path from 'node:path';
 import { copyFile, mkdir, readdir, readFile, writeFile, lstat, access } from 'node:fs/promises';
 import { createPublicKey, generateKeyPairSync, sign } from 'node:crypto';
@@ -43,7 +44,7 @@ async function visit(relative:string){
 for(const root of ['mods','resourcepacks','datapacks','shaderpacks','options.txt'])await visit(root);
 if(!files.some(f=>f.path.startsWith('mods/')))throw new Error('В профиле отсутствуют mods/*.jar');
 const seq=Date.now();
-const manifest:Manifest={schema:1,version:'test-'+seq,sequence:seq,minecraft:'1.21.1',neoforge:'21.1.256',expires:new Date(seq+90*86400000).toISOString(),files,allowedAddons:[]};
+const manifest:Manifest=await profileGraphics(source,{schema:1,version:'test-'+seq,sequence:seq,minecraft:'1.21.1',neoforge:'21.1.256',expires:new Date(seq+90*86400000).toISOString(),files,allowedAddons:[]});
 if(archive && archiveUrl){
   const url=trustedUrl(archiveUrl);
   if(new URL(url).hostname==='drive.google.com' && new URL(url).pathname.includes('/view'))throw new Error('Это ссылка на страницу просмотра. Укажите прямую ссылку на байты ZIP или используйте раздачу с ПК.');

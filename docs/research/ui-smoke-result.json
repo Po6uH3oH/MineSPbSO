@@ -1,4 +1,13 @@
 {
+  "autoLoginCanBeDisabled": true,
+  "rememberOptOutHonored": true,
+  "connectionErrorAndRetry": true,
+  "mandatoryLogin": true,
+  "invalidLoginBlocked": true,
+  "logoutLocksShell": true,
+  "gamePreferencesRestored": true,
+  "twoThemes": true,
+  "graphicsSelection": true,
   "staleLockRepaired": true,
   "cacheCleared": true,
   "loggingRestored": true,

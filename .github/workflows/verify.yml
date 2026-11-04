@@ -24,6 +24,7 @@ jobs:
           name: community-gate
           path: mods/build/libs
       - run: pnpm build
+      - run: pnpm exec tsx scripts/ui-smoke.ts
       - run: pnpm exec electron-builder --win nsis --x64 --publish never
       - run: node scripts/verify-release.mjs
       - name: Scan exact installer with Microsoft Defender
@@ -79,6 +80,7 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: windows-unsigned-preview
@@ -91,4 +93,4 @@ jobs:
           [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           cd release
           sha256sum --check "MineSPbSO-${version}-Setup.exe.sha256"
-          gh release create "$GITHUB_REF_NAME" "MineSPbSO-${version}-Setup.exe" "MineSPbSO-${version}-Setup.exe.sha256" "community-gate-0.2.0.jar" --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "MineSPbSO $version" --notes "Windows x64, тестовая сборка."
+          gh release create "$GITHUB_REF_NAME" "MineSPbSO-${version}-Setup.exe" "MineSPbSO-${version}-Setup.exe.sha256" "community-gate-0.2.0.jar" --repo "$GITHUB_REPOSITORY" --verify-tag --prerelease --title "MineSPbSO $version" --notes-file "$GITHUB_WORKSPACE/docs/releases/$version.md"
