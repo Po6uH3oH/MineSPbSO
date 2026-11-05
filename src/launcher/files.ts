@@ -6,7 +6,15 @@ import { noProgress, type Transfer } from './progress.js';
 import { z } from 'zod';
 
 export const fileSchema=z.object({path:z.string(),url:z.url(),size:z.number().int().min(0).max(2**31),sha256:z.string().regex(/^[a-f0-9]{64}$/),side:z.enum(['client','server','both']),policy:z.enum(['managed','default']),required:z.boolean(),license:z.string().min(1),source:z.url()});
-export const manifestSchema=z.object({schema:z.literal(1),version:z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),sequence:z.number().int().min(1),minecraft:z.literal('1.21.1'),neoforge:z.literal('21.1.256'),expires:z.iso.datetime(),files:z.array(fileSchema).max(2000),archive:z.object({url:z.url(),size:z.number().int().positive().max(4*1024**3),sha256:z.string().regex(/^[a-f0-9]{64}$/)}).optional(),graphics:z.object({mods:z.array(z.string()).max(200),basicDistance:z.number().int().min(2).max(32),enhancedDistance:z.number().int().min(2).max(32)}).optional(),allowedAddons:z.array(z.string().regex(/^[a-f0-9]{64}$/)).default([])});
+export const graphicsSchema = z.object({
+ mods: z.array(z.string()).max(200),
+ basicDistance: z.number().int().min(2).max(32),
+ enhancedDistance: z.number().int().min(2).max(32),
+ shaderPack: z.string().regex(/^shaderpacks\/[^/\\]+\.zip$/i).optional(),
+ basicLodRadius: z.number().int().min(16).max(1024).optional(),
+ enhancedLodRadius: z.number().int().min(16).max(1024).optional(),
+});
+export const manifestSchema=z.object({schema:z.literal(1),version:z.string().regex(/^[A-Za-z0-9._-]{1,64}$/),sequence:z.number().int().min(1),minecraft:z.literal('1.21.1'),neoforge:z.literal('21.1.256'),expires:z.iso.datetime(),files:z.array(fileSchema).max(2000),archive:z.object({url:z.url(),size:z.number().int().positive().max(4*1024**3),sha256:z.string().regex(/^[a-f0-9]{64}$/)}).optional(),graphics:graphicsSchema.optional(),allowedAddons:z.array(z.string().regex(/^[a-f0-9]{64}$/)).default([])});
 export type Manifest=z.infer<typeof manifestSchema>;
 export function safeRelative(p:string) {
  if(p.length>220||p.includes('\\')||p.includes(':')||p.startsWith('/')||p.split('/').some(v=>!v||v==='.'||v==='..'||/[. ]$/.test(v)||/^(con|prn|aux|nul|com[0-9]|lpt[0-9])(?:\.|$)/i.test(v)||/[<>"|?*\x00-\x1f]/.test(v)))throw new Error('Недопустимый путь в выпуске');
@@ -28,6 +36,11 @@ export function verifyManifest(envelope:string,key:string,minSequence=0):Manifes
   const u=new URL(f.url);if(u.protocol!=='https:'&&!(u.protocol==='http:'&&['127.0.0.1','localhost'].includes(u.hostname)))throw new Error('Источник должен использовать HTTPS');
  }
  if(m.graphics){
+  if (m.graphics.shaderPack) {
+   const shader = m.files.find(file => file.path === m.graphics!.shaderPack);
+   if (!shader || shader.required || shader.side !== 'client' || shader.policy !== 'default')
+    throw new Error('Шейдерпак должен быть необязательным клиентским ZIP в выпуске.');
+  }
   if(new Set(m.graphics.mods).size!==m.graphics.mods.length)throw new Error('Дубли в графическом наборе');
   for(const p of m.graphics.mods){
    const f=m.files.find(f=>f.path===p);
@@ -96,7 +109,7 @@ export async function installPack(root:string,m:Manifest,side:'client'|'server',
   let intact=true;
   for(const f of files){
    const target=await safePath(root,'game/'+f.path);
-   if(f.policy==='default'?!(await lstat(target).catch(()=>null))?.isFile():await hashFile(target).catch(()=>null)!==f.sha256){intact=false;break;}
+   if(f.policy==='default'&&f.path!==m.graphics?.shaderPack?!(await lstat(target).catch(()=>null))?.isFile():await hashFile(target).catch(()=>null)!==f.sha256){intact=false;break;}
   }
   if(intact)return;
  }
@@ -121,7 +134,20 @@ export async function installPack(root:string,m:Manifest,side:'client'|'server',
  for(const name of await readdir(stage))if(!names.has(name.toLowerCase()))throw new Error('Временный каталог содержит посторонний файл; перенесите его для диагностики');
  status('Проверяем файлы');
  const mods=await safePath(root,'game/mods');await mkdir(path.dirname(mods),{recursive:true});
- for(const f of files.filter(f=>f.policy==='default')){const dest=await safePath(root,`game/${f.path}`);await mkdir(path.dirname(dest),{recursive:true});try{await copyFile(path.join(root,'cache',f.sha256),dest,1);}catch(e:any){if(e.code!=='EEXIST')throw e;}}
+ for (const file of files.filter(file => file.policy === 'default')) {
+  const dest = await safePath(root, 'game/' + file.path);
+  await mkdir(path.dirname(dest), {recursive:true});
+  const cache = path.join(root, 'cache', file.sha256);
+  if (file.path === m.graphics?.shaderPack) {
+   if (await hashFile(dest).catch(() => '') !== file.sha256) {
+    const temp = await safePath(root, 'game/' + file.path + '.download.tmp');
+    await copyFile(cache,temp);
+    await rename(temp,dest);
+   }
+  } else {
+   try { await copyFile(cache,dest,1); } catch (e:any) { if (e.code !== 'EEXIST') throw e; }
+  }
+ }
  const oldNames=await readdir(mods).catch(()=>[]);
  const previous=JSON.parse(await readFile(path.join(root,'installed.json'),'utf8').catch(()=>'{}'));
  for(const name of oldNames)if(!(previous.managedFiles??[]).includes(name.toLowerCase()))throw new Error(`В папке mods найден неуправляемый файл ${name}. Перенесите дополнения в addons для проверки.`);

@@ -1,4 +1,6 @@
 {
+  "skinHeadPreview": true,
+  "exactMemoryMb": true,
   "autoLoginCanBeDisabled": true,
   "rememberOptOutHonored": true,
   "connectionErrorAndRetry": true,

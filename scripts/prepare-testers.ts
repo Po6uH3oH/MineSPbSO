@@ -7,7 +7,10 @@ import { open, walkEntries, openEntryReadStream } from '@xmcl/unzip';
 import { createHash } from 'node:crypto';
 import { trustedUrl } from '../src/launcher/config.js';
 
-const [source,archive,archiveUrl]=process.argv.slice(2);
+const args=process.argv.slice(2);
+const stageOnly=args.at(-1)==='--stage';
+if(stageOnly)args.pop();
+const [source,archive,archiveUrl]=args;
 if(!source || Boolean(archive)!==Boolean(archiveUrl))throw new Error('prepare-testers.ts ПАПКА_ПРОФИЛЯ [ЛОКАЛЬНЫЙ_ZIP ПРЯМАЯ_HTTPS_ССЫЛКА]');
 const dir=path.resolve('.local/tester-distribution');
 const keyDir=path.resolve('.local/tester-keys');
@@ -68,6 +71,12 @@ const payload=Buffer.from(JSON.stringify(manifest));
 const envelope={payload:payload.toString('base64'),signature:sign(null,payload,key).toString('base64')};
 verifyManifest(JSON.stringify(envelope),publicKey);
 const ca=await readFile(path.join(keyDir,'tls-cert.pem'),'utf8');
-await atomicJson('config/launcher.tester.json',{...config,apiUrl:base,apiCA:ca,testerHost:'10.99.52.8',testerPackKey:publicKey});
-await atomicJson(path.join(dir,'current.json'),envelope);
+if (stageOnly) {
+ const activeConfig = JSON.parse(await readFile('config/launcher.tester.json','utf8'));
+ if (activeConfig.testerPackKey !== publicKey) throw new Error('Ключ не совпадает с ключом текущего лаунчера.');
+ await atomicJson(path.join(dir,'current.ready.json'),envelope);
+} else {
+ await atomicJson('config/launcher.tester.json',{...config,apiUrl:base,apiCA:ca,testerHost:'10.99.52.8',testerPackKey:publicKey});
+ await atomicJson(path.join(dir,'current.json'),envelope);
+}
 console.log('Подготовлен выпуск',manifest.version,'· файлов',files.length,'· МБ',(files.reduce((sum,f)=>sum+f.size,0)/1e6).toFixed(1));

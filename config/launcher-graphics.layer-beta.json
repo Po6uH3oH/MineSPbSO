@@ -1,0 +1,16 @@
+{
+  "mods": [
+    "mods/SubtleEffects-neoforge-1.21.1-1.15.1.jar",
+    "mods/elytra_physics-neoforge-2.6.2_mc1.21.1.jar",
+    "mods/betterbiomeblend-1.5.2.jar",
+    "mods/waveycapes-neoforge-1.11.3-mc1.21.1.jar",
+    "mods/particlerain-4.0.3+1.21.1-neoforge.jar",
+    "mods/skinlayers3d-neoforge-1.11.4-mc1.21.1.jar",
+    "mods/notenoughanimations-neoforge-1.12.7-mc1.21.1.jar"
+  ],
+  "shaderPack": "shaderpacks/ComplementaryUnbound_r5.9.3.zip",
+  "basicDistance": 6,
+  "enhancedDistance": 12,
+  "basicLodRadius": 16,
+  "enhancedLodRadius": 48
+}

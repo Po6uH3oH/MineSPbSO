@@ -10,8 +10,10 @@ const appRequire=createRequire(builderRequire.resolve('app-builder-lib'));
 const {extractFile,listPackage}=appRequire('@electron/asar');
 const resources=path.join(path.dirname(file),'win-unpacked','resources');
 const asar=path.join(resources,'app.asar');
-assert.deepEqual(listPackage(asar).map(p=>p.slice(1).replaceAll('\\','/')).sort(),['assets','assets/aurora.jpg','assets/mountains.jpg','community-gate-0.2.0.jar','icon.png','index.html','main.cjs','package.json','preload.cjs','renderer.js','style.css']);
-for(const name of ['assets/aurora.jpg','assets/mountains.jpg','icon.png','main.cjs','preload.cjs','renderer.js','index.html','style.css','package.json','community-gate-0.2.0.jar']){
+const assets = ['aurora.jpg','mountains.jpg','FONT-LICENSES.txt','Classic-Console-Neue-Regular.ttf','Ithaca.ttf','minecraft-ten-font-cyrillic.ttf'].map(name => 'assets/' + name);
+const expected = [...assets,'community-gate-0.2.0.jar','icon.png','index.html','main.cjs','package.json','preload.cjs','renderer.js','style.css'];
+assert.deepEqual(listPackage(asar).map(p=>p.slice(1).split(path.sep).join('/')).sort(),['assets',...expected].sort());
+for(const name of expected){
  const packed=extractFile(asar,name);
  assert.ok(packed.equals(await readFile(`dist/app/${name}`)),`Packaged ${name} differs from build`);
 }

@@ -11,8 +11,10 @@ for(const b of document.querySelectorAll<HTMLButtonElement>('[data-tab]'))b.oncl
 async function action(fn:()=>Promise<unknown>){$('notice').hidden=true;try{await fn();await refresh();}catch(e:any){notice(e.message);}}
 async function refresh(){state=await call('state');$('identity').textContent=state.account?.nickname??'Вы не вошли';$('stage').textContent=state.stage;$('pack-source').textContent=state.localPack||(state.remotePack?'Загрузка с сервера':'Сборка не выбрана');$('remote-pack').hidden=!state.remotePack;
  $('basic-edition').setAttribute('aria-pressed',String(!state.enhancedGraphics));$('enhanced-edition').setAttribute('aria-pressed',String(state.enhancedGraphics));
- $('edition-label').textContent=state.enhancedGraphics?'Улучшенная':'Обычная';$('edition-description').textContent=state.enhancedGraphics?'Больше деталей. Больше впечатлений.':'Всё для комфортной игры';
- $('memory-recommended').textContent='Рекомендуется: '+(state.enhancedGraphics?6:4)+' ГБ';$('memory-max').textContent=state.budget.max+' ГБ';
+ $('edition-label').textContent = state.enhancedGraphics ? 'Улучшенная' : 'Обычная';
+ const recommended = state.enhancedGraphics ? 6144 : 4096;
+ $('memory-recommended').textContent = 'Рекомендуется: '+recommended+' МБ';
+ $('memory-max').textContent = state.budget.max * 1024 + ' МБ';
  $('memory-hint').textContent=state.enhancedGraphics&&state.budget.max<6?'Для 6 ГБ недостаточно общей памяти. Выделение ограничено, чтобы оставить запас для Windows.':'Оставьте запас памяти для Windows и других приложений.';
  input('auto-login').checked=state.preferences.autoLogin;input('auto-join').checked=state.preferences.autoJoin;
  if(!document.querySelector('#game-settings :focus')){input('game-width').value=state.preferences.width;input('game-height').value=state.preferences.height;input('fullscreen').checked=state.preferences.fullscreen;($('jvm-args') as HTMLTextAreaElement).value=state.preferences.jvmArgs;}
@@ -33,7 +35,38 @@ async function refresh(){state=await call('state');$('identity').textContent=sta
  if(a){if(!wasAuthenticated){activeTab='home';$('connection-error').hidden=true;$('auth-content').hidden=false;$('auth-error').hidden=true;}tab(activeTab);}else if(wasAuthenticated){showStep('login');}
  wasAuthenticated=!!a;
  if(!a&&state.sessionError){showAuthError(state.sessionError);}
- const m=$('memory') as HTMLInputElement;m.max=state.budget.max;m.value=String(state.memory);paintMemory();$('memory-value').textContent=`${state.memory} ГБ`;if(a){$('profile-name').textContent=a.nickname;$('avatar-letter').textContent=a.nickname.slice(0,1).toUpperCase();$('account-status').textContent=a.verified?'Почта подтверждена':'Подтвердите почту';$('verify-box').hidden=a.verified;}}
+ const slider = input('memory'), amount = input('memory-value');
+ slider.max = amount.max = String(state.budget.max * 1024);
+ slider.value = String(state.memoryMb);
+ if (document.activeElement !== amount) amount.value = slider.value;
+ paintMemory();
+ if (a) {
+  $('profile-name').textContent = a.nickname;
+  $('verify-box').hidden = a.verified;
+ }
+ void showSkinHead(a?.skinHash ?? '');
+}
+let displayedSkin = '';
+async function showSkinHead(hash:string) {
+ if (displayedSkin === hash) return;
+ displayedSkin = hash;
+ const canvas = $('skin-head') as HTMLCanvasElement;
+ canvas.hidden = true;
+ if (!hash) return;
+ try {
+  const url = await call('skin-preview',hash);
+  if (!url || displayedSkin !== hash) return;
+  const bitmap = new Image();
+  bitmap.src = url;
+  await bitmap.decode();
+  if (displayedSkin !== hash) return;
+  const ctx = canvas.getContext('2d')!;
+  ctx.clearRect(0,0,8,8);
+  ctx.drawImage(bitmap,8,8,8,8,0,0,8,8);
+  ctx.drawImage(bitmap,40,8,8,8,0,0,8,8);
+  canvas.hidden = false;
+ } catch { if (displayedSkin === hash) displayedSkin = ''; }
+}
 function showProgress(info:TransferInfo|null){
  $('transfer').hidden=!info;
  if(!info)return;
@@ -48,7 +81,7 @@ async function updateServer(){
  const value=await call('server-status').catch(()=>null);
  if(id!==statusRequest)return;
  $('server-count').textContent=value?.players?String(value.players.online):'—';
- $('server-status-label').textContent=value?'В сети · '+value.version.name:'Сервер недоступен';
+ $('server-status-label').textContent=value?'В сети':'Сервер недоступен';
  $('server-dot').style.background=value?'#50c6b5':'#8997ac';
  const names=value?.players?.sample?.map((p:{name:string})=>p.name)??[];
  $('player-list').textContent=names.length?'Игроки на сервере'+(names.length<value.players.online?' (часть списка)':'')+'\n'+names.join('\n'):value?.players?.online===0?'Сейчас на сервере нет игроков':'Сервер не передал список игроков';
@@ -154,7 +187,29 @@ $('clear-cache').onclick=()=>void action(async()=>{if(confirm('Удалить к
 $('identity').onclick=()=>tab('profile');
 
 for(const [id,enabled] of [['basic-edition',false],['enhanced-edition',true]] as const)$(id).onclick=()=>void action(async()=>{await call('graphics',enabled);});
-function paintMemory(){const m=input('memory'),span=Number(m.max)-Number(m.min);m.style.setProperty('--memory-fill',((Number(m.value)-Number(m.min))/span*100)+'%');$('memory-marker').style.setProperty('--memory-recommendation',(Math.min(1,((state?.enhancedGraphics?6:4)-Number(m.min))/span)*100)+'%');}
-$('memory').oninput=()=>{$('memory-value').textContent=input('memory').value+' ГБ';paintMemory();};
+function paintMemory() {
+ const slider = input('memory');
+ const minimum = Number(slider.min), span = Number(slider.max) - minimum;
+ slider.style.setProperty('--memory-fill', (Number(slider.value)-minimum)/span*100+'%');
+ const recommended = state?.enhancedGraphics ? 6144 : 4096;
+ $('memory-marker').hidden = recommended > Number(slider.max);
+ $('memory-marker').style.setProperty('--memory-recommendation',(recommended-minimum)/span*100+'%');
+}
+input('memory').oninput = () => {
+ input('memory-value').value = input('memory').value;
+ paintMemory();
+};
+input('memory-value').onchange = () => {
+ const field = input('memory-value');
+ if (!field.value || !field.checkValidity()) {
+  notice('Введите целое число от '+field.min+' до '+field.max+' МБ.');
+  field.value = String(state.memoryMb);
+  return;
+ }
+ input('memory').value = field.value;
+ paintMemory();
+ void action(() => call('memory',field.valueAsNumber));
+};
+input('memory-value').onkeydown = e => { if (e.key === 'Enter') input('memory-value').blur(); };
 for(const [id,key] of [['auto-login','autoLogin'],['auto-join','autoJoin']] as const)$(id).onchange=()=>void action(async()=>{try{await call('preferences',{...state.preferences,[key]:input(id).checked});}finally{await refresh();}});
 $('game-settings').onsubmit=e=>{e.preventDefault();void action(async()=>{await call('preferences',{...state.preferences,width:Number(input('game-width').value),height:Number(input('game-height').value),fullscreen:input('fullscreen').checked,jvmArgs:($('jvm-args') as HTMLTextAreaElement).value});notice('Параметры игры сохранены.');});};

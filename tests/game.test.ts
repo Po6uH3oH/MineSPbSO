@@ -19,14 +19,14 @@ test('XMCL uses exact account nickname/UUID, bundled Java and a separate game pa
   const installation = { version, resourcePath, javaPath: path.join(root, 'runtime', 'bin', 'java.exe') };
   const profile = { nickname: 'Owner_Nick', uuid: offlineUuid('Owner_Nick') };
   for (const port of [undefined, 25599]) {
-    const args = await generateArguments(gameLaunchOptions(root, installation, profile, port, {}, 4));
+    const args = await generateArguments(gameLaunchOptions(root, installation, profile, port, {}, memoryBudget(32 * 1024 ** 3, 20 * 1024 ** 3, 5127 / 1024).selected));
     const value = (flag: string) => args[args.indexOf(flag) + 1];
     assert.equal(args[0], installation.javaPath);
     assert.equal(value('--username'), profile.nickname);
     assert.equal(value('--uuid'), profile.uuid.replaceAll('-', ''));
     assert.equal(value('--gameDir'), path.join(root, 'game').replaceAll('\\', '/'));
     assert.equal(value('--accessToken'), '0');
-    assert.ok(args.includes('-Xmx4096M'));
+    assert.ok(args.includes('-Xmx5127M'));
     assert.equal(args.includes('--quickPlayMultiplayer'), port !== undefined);
     if (port) assert.equal(value('--quickPlayMultiplayer'), `127.0.0.1:${port}`);
     assert.equal(args.includes('--server'), false);

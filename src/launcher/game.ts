@@ -13,7 +13,7 @@ import { getVersionList, resolveMinecraftVersionJsonInstallFile, resolveMinecraf
 
 export function memoryBudget(total=os.totalmem(),free=os.freemem(),requested=4){
  const gib=1024**3,max=Math.max(4,Math.min(10,Math.floor(total/gib-4))),recommended=Math.min(max,Math.max(4,Math.floor(total/gib/2)));
- const selected=Math.max(3,Math.min(max,Math.floor(requested)));
+ const selected=Math.max(3,Math.min(max,Math.floor(requested * 1024) / 1024));
  return {max,recommended,selected,canLaunch:total>=7.5*gib&&free>=(selected+1.5)*gib};
 }
 async function officialInstaller(folder:MinecraftFolder,root:string) {

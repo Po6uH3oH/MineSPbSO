@@ -24,7 +24,7 @@ import {clearDownloadCache,createJournal} from './maintenance.js';
 async function main(){
 if(!app.isPackaged&&process.env.SMP_DEV_USERDATA)app.setPath('userData',path.resolve(process.env.SMP_DEV_USERDATA));
 if(!app.requestSingleInstanceLock()){app.quit();return;}
-let win:BrowserWindow,access='',refresh='',remember=false,busy=false,memory=4,updating:Promise<void>|undefined;
+let win:BrowserWindow,access='',refresh='',remember=false,busy=false,memoryMb=4096,updating:Promise<void>|undefined;
 let stage='Готов к работе';const events:{time:string,event:string}[]=[];
 const status=(text:string)=>{progressValue=null;win?.webContents.send('progress',null);stage=text;if(logging)void journal(text);events.push({time:new Date().toISOString(),event:text});if(events.length>100)events.shift();win?.webContents.send('status',text);};
 await app.whenReady();
@@ -51,7 +51,8 @@ const journal=createJournal(logFolder);let logging=settings.logging===true;
 let enhancedGraphics=settings.enhancedGraphics===true;
 let preferences=gamePreferencesSchema.parse(settings.preferences??{});
 let sessionError:{message:string,status?:number,detail?:string}|null=null;
-memory=z.number().int().min(3).max(10).catch(4).parse(settings.memory);
+const legacyMemory = z.number().int().min(3).max(10).catch(4).parse(settings.memory) * 1024;
+memoryMb = Math.min(memoryBudget().max * 1024, z.number().int().min(3072).max(10240).catch(legacyMemory).parse(settings.memoryMb));
 localPack=z.string().catch('').parse(settings.localPack);
 const isOwner=Object.values(os.networkInterfaces()).flat().some(n=>n?.address===config.testerHost);
 let host=serverTargets(settings.host ?? (isOwner?'localhost':config.testerHost)).host;
@@ -61,7 +62,7 @@ async function protectedStatus(){
  const channel=await openGameTunnel();
  try{return await queryServer('127.0.0.1',channel.port);}finally{channel.close();}
 }
-const saveSettings=()=>atomicJson(settingsFile,{memory,localPack,host,logging,enhancedGraphics,preferences});
+const saveSettings=()=>atomicJson(settingsFile,{memoryMb,localPack,host,logging,enhancedGraphics,preferences});
 
 async function saveSession(){if(remember&&refresh){if(!safeStorage.isEncryptionAvailable())throw new Error('Защищённое хранилище Windows недоступно');await writeFile(tokenPath,safeStorage.encryptString(refresh));}else await unlink(tokenPath).catch(()=>{});}
 async function request(route:string,body?:unknown,token?:string){
@@ -83,7 +84,7 @@ const nativeUpdates=!!config.updateUrl&&config.signedUpdates;
 async function currentAccount(){if(!access)return null;try{return await authenticated('/me');}catch(e:any){sessionError={message:e.message,status:e.status,detail:e.detail};access='';if(e.status===401){refresh='';await saveSession();}return null;}}
 handler('window',async value=>{if(value==='minimize')win.minimize();else if(value==='close')win.close();else throw new Error('Неизвестное действие окна');});
 handler('preferences',async value=>{if(busy)throw new Error('Закройте игру перед изменением параметров.');const next=gamePreferencesSchema.parse(value);parseJvmArgs(next.jvmArgs);preferences=next;await saveSettings();});
-handler('state',async()=>({name:config.name,news:config.news,stage,memory,localPack,host,logging,enhancedGraphics,preferences,tester,progress:progressValue,remotePack:!!config.testerPackKey,budget:memoryBudget(),account:await currentAccount(),sessionError,hasMap:tester||!!config.blueMapUrl,updates:nativeUpdates,version:app.getVersion(),availableVersion:candidate?.version,downloaded}));
+handler('state',async()=>({name:config.name,news:config.news,stage,memoryMb,localPack,host,logging,enhancedGraphics,preferences,tester,progress:progressValue,remotePack:!!config.testerPackKey,budget:memoryBudget(),account:await currentAccount(),sessionError,hasMap:tester||!!config.blueMapUrl,updates:nativeUpdates,version:app.getVersion(),availableVersion:candidate?.version,downloaded}));
 handler('auth',async raw=>{
  const v=z.object({action:z.enum(['login','register','verify','forgot','reset','resend','logout','revoke-all']),data:z.record(z.string(),z.unknown()).default({})}).parse(raw);
  if(v.action==='login'){sessionError=null;remember=v.data.remember===true;const r=await request('/auth/login',{email:v.data.email,password:v.data.password});access=r.access;refresh=r.refresh;await saveSession();return r.account;}
@@ -102,8 +103,14 @@ handler('maintenance',async value=>{
   return 'Экземпляр свободен. Можно запускать игру.';
  }finally{await release();}}finally{busy=false;}
 });
-handler('graphics',async value=>{if(busy||updateWork)throw new Error('Закройте игру и дождитесь установки');const next=z.boolean().parse(value);if(next!==enhancedGraphics)memory=Math.min(memoryBudget().max,next?6:4);enhancedGraphics=next;await saveSettings();});
-handler('memory',async value=>{memory=z.number().int().min(3).max(memoryBudget().max).parse(value);await saveSettings();return memory;});
+handler('graphics',async value=>{if(busy||updateWork)throw new Error('Закройте игру и дождитесь установки');const next=z.boolean().parse(value);if(next!==enhancedGraphics)memoryMb=Math.min(memoryBudget().max*1024,next?6144:4096);enhancedGraphics=next;await saveSettings();});
+handler('memory', async value => {
+ const max = memoryBudget().max * 1024;
+ if (!Number.isInteger(value) || value < 3072 || value > max) throw new Error('Введите целое число от 3072 до '+max+' МБ.');
+ memoryMb = value;
+ await saveSettings();
+ return memoryMb;
+});
 handler('folder',async()=>{await mkdir(path.join(root,'game'),{recursive:true});const e=await shell.openPath(path.join(root,'game'));if(e)throw new Error(e);});
 let lastChecks:{label:string,ok:boolean,detail:string}[]=[];
 handler('check-network',async()=>{
@@ -129,6 +136,13 @@ handler('host',async value=>{if(!tester||busy)throw new Error('Смена адр
 handler('remote-pack',async()=>{if(busy)throw new Error('Закройте игру');localPack='';await saveSettings();});
 handler('server-status',async()=>{try{return await protectedStatus();}catch{return null;}});
 handler('map',async()=>{if(tester){await shell.openExternal(serverTargets(host).map);return;}if(!config.blueMapUrl)throw new Error('Карта ещё не настроена');await shell.openExternal(trustedUrl(config.blueMapUrl));});
+handler('skin-preview', async hash => {
+ if (!access || typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash)) return null;
+ const response = await fetchFile(config.apiUrl+'/csl/textures/'+hash, {signal:AbortSignal.timeout(5000)});
+ if (!response.ok) return null;
+ const bytes = Buffer.from(await response.arrayBuffer());
+ return bytes.length <= 65536 ? 'data:image/png;base64,'+bytes.toString('base64') : null;
+});
 handler('skin',async raw=>{const model=z.enum(['default','slim']).parse(raw);const result=await dialog.showOpenDialog(win,{properties:['openFile'],filters:[{name:'PNG-скин',extensions:['png']}]});if(result.canceled)return;
  const data=await readFile(result.filePaths[0]!);if(data.length>65536)throw new Error('Скин должен быть меньше 64 КБ');await renew();const form=new FormData();form.set('skin',new Blob([data]),'skin.png');const r=await fetchFile(`${config.apiUrl}/me/skin?model=${model}`,{method:'POST',headers:{Authorization:`Bearer ${access}`},body:form,signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error((await r.json() as any).error);return true;});
 handler('diagnostics',async()=>{const target=await dialog.showSaveDialog(win,{defaultPath:'smp-diagnostics.json',filters:[{name:'JSON',extensions:['json']}]});if(target.canceled||!target.filePath)return;await writeFile(target.filePath,JSON.stringify({launcher:app.getVersion(),platform:process.platform,arch:process.arch,memoryGiB:memoryBudget().max+4,stages:events,network:lastChecks},null,2));return true;});
@@ -148,7 +162,7 @@ handler('play',async()=>{
   const profile=await authenticated('/me');if(!profile.verified)throw new Error('Сначала подтвердите почту');
   if(!tester && (!config.manifestUrl || !config.manifestPublicKey))throw new Error('Владелец ещё не настроил подписанный серверный выпуск.');
   if(!localPack&&!config.testerPackKey&&(!config.manifestUrl||!config.manifestPublicKey))throw new Error('Выберите папку сборки в настройках. Серверный выпуск пока не настроен.');
-  if(!memoryBudget(undefined,undefined,memory).canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения и повторите попытку.');
+  if(!memoryBudget(undefined,undefined,memoryMb/1024).canLaunch)throw new Error('Недостаточно свободной памяти. Закройте другие приложения и повторите попытку.');
   unlock=await acquireLock(root);
   status('Проверяем защищённый вход на сервер');
   await checkGateway(...gatewayArgs());
@@ -185,7 +199,7 @@ handler('play',async()=>{
   tunnel=await startTunnel(...gatewayArgs(),gameLoopback);
   await saveCommunityServer(root,config.name,tunnel.port);
   broker=await startBroker(challenge=>authenticated('/join/ticket',{challenge}));
-  status('Запускаем игру');gameProcess=await launchGame(root,profile,preferences.autoJoin?gameLoopback+':'+tunnel.port:undefined,{...broker.env,SMP_GAME_PORT:String(tunnel.port)},memory,preferences);
+  status('Запускаем игру');gameProcess=await launchGame(root,profile,preferences.autoJoin?gameLoopback+':'+tunnel.port:undefined,{...broker.env,SMP_GAME_PORT:String(tunnel.port)},memoryMb/1024,preferences);
   gameProcess.stdout?.resume();gameProcess.stderr?.resume();
   gameProcess.once('error',()=>{status('Не удалось запустить Java');void cleanup();});
   gameProcess.once('exit',(code,signal)=>{if(logging)void journal('Java завершилась · код '+code+' · сигнал '+signal);status(code===0?'Игра закрыта':'Игра завершилась с ошибкой. Проверьте журнал в папке игры.');void cleanup();});return true;

@@ -4,7 +4,7 @@ import {mkdtemp,mkdir,writeFile,readFile,readdir,rename} from 'node:fs/promises'
 import path from 'node:path';
 import {importLocalPack} from '../src/launcher/local-pack.js';
 import {installPack,hashFile,verifyManifest,type Manifest} from '../src/launcher/files.js';
-import {graphicsSelection} from '../src/launcher/graphics.js';
+import {applyGraphics,graphicsSelection,setLodRadius} from '../src/launcher/graphics.js';
 import {generateKeyPairSync,sign} from 'node:crypto';
 
 async function fixture(){
@@ -58,4 +58,32 @@ test('base installation never downloads graphics; switch downloads only addition
  for(const bad of ['mods/missing.jar','mods/base.jar']){
   assert.throws(()=>verifyManifest(envelope({...m,graphics:{...m.graphics!,mods:[bad]}}),key));
  }
+});
+
+test('optional shader download, Iris activation and DH radius follow the selected profile',async()=>{
+ const root=await fixture();
+ const shader='shaderpacks/example.zip';
+ const entries=[['mods/iris-test.jar',true],['mods/DistantHorizons-test.jar',true],[shader,false],[shader+'.txt',false]] as const;
+ const files:Manifest['files']=[];
+ for(const [name,required] of entries){
+  const data=Buffer.from(name),tmp=path.join(root,'hash-fixture');await writeFile(tmp,data);
+  files.push({path:name,required,sha256:await hashFile(tmp),url:'https://example.test/'+name,size:data.length,source:'fixture',license:'fixture',side:'client',policy:name.startsWith('mods/')?'managed':'default'});
+ }
+ const m:Manifest={schema:1,version:'test',sequence:1,minecraft:'1.21.1',neoforge:'21.1.256',expires:'2099-01-01T00:00:00Z',files,allowedAddons:[],graphics:{mods:[],basicDistance:6,enhancedDistance:12,shaderPack:shader,basicLodRadius:16,enhancedLodRadius:48}};
+ const calls:string[]=[];
+ const fetchFile=(async(url:string)=>{const name=new URL(url).pathname.slice(1);calls.push(name);return new Response(name);}) as typeof fetch;
+ await mkdir(path.join(root,'game/config'),{recursive:true});
+ await writeFile(path.join(root,'game/config/iris.properties'),'colorSpace=SRGB\nenableShaders=true\n');
+ for(const enhanced of [false,true,false]){
+  await installPack(root,m,'client',()=>{},graphicsSelection(m,enhanced),()=>{},fetchFile);
+  await applyGraphics(root,m,enhanced);
+  const iris=await readFile(path.join(root,'game/config/iris.properties'),'utf8');
+  assert.ok(iris.includes('enableShaders='+enhanced));assert.ok(iris.includes('colorSpace=SRGB'));
+  if(enhanced){assert.ok(iris.includes('shaderPack=example.zip'));assert.equal(await readFile(path.join(root,'game',shader),'utf8'),shader);}
+  assert.match(await readFile(path.join(root,'game/config/DistantHorizons.toml'),'utf8'),new RegExp('lodChunkRenderDistanceRadius = '+(enhanced?48:16)));
+  if(calls.length===2)assert.deepEqual(calls,entries.slice(0,2).map(entry=>entry[0]));
+ }
+ assert.deepEqual(calls,entries.map(entry=>entry[0]));
+ const original='[server]\nlodChunkRenderDistanceRadius = 512\n[client.advanced.graphics.quality]\n  lodChunkRenderDistanceRadius = 64 # custom\nother = 4\n';
+ assert.equal(setLodRadius(original,32),original.replace('64 #','32 #'));
 });

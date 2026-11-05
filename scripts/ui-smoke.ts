@@ -2,6 +2,7 @@ import {_electron as electron} from 'playwright';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {createHash,generateKeyPairSync,sign} from 'node:crypto';
 import path from 'node:path';
+import {PNG} from 'pngjs';
 import assert from 'node:assert/strict';
 const data=path.resolve(`.local/ui-smoke-data-${Date.now()}`);await mkdir(data,{recursive:true});
 const {database,migrate}=await import('../src/service/db.js');
@@ -54,6 +55,15 @@ try{
  loginFailure=false;await page.locator('#retry-auth').click();
  await page.locator('#play').waitFor();
  await page.locator('#identity').click();await page.locator('#profile-name').getByText(name).waitFor();
+ assert.equal(await page.locator('#skin-head').isVisible(),false);
+ const skin=new PNG({width:64,height:64});
+ skin.data.fill(0);
+ const pixel=(8*64+8)*4;skin.data[pixel]=255;skin.data[pixel+3]=255;
+ const skinFile=path.join(data,'skin.png');await writeFile(skinFile,PNG.sync.write(skin));
+ await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=(async()=>({canceled:false,filePaths:[file]})) as typeof dialog.showOpenDialog;},skinFile);
+ await page.locator('#skin').click();await page.locator('#skin-head').waitFor();
+ assert.deepEqual(await page.locator('#skin-head').evaluate(el=>Array.from((el as HTMLCanvasElement).getContext('2d')!.getImageData(0,0,1,1).data)),[255,0,0,255]);
+ await page.locator('#dismiss-notice').click();
  await page.locator('#update-offer').waitFor();await page.locator('#offer-action').click();
  await page.getByRole('button',{name:'Установить и перезапустить',exact:true}).filter({visible:true}).first().waitFor();
  const downloaded=path.join(data,'updates','MineSPbSO-9.0.0-Setup.exe');
@@ -67,10 +77,12 @@ try{
  await page.screenshot({animations:'disabled',path:'.local/ui-smoke.png',fullPage:true});
  const globals=await page.evaluate(()=>({node:typeof (globalThis as any).require,bridge:typeof window.smp}));assert.equal(globals.node,'undefined');assert.equal(globals.bridge,'object');
  const before=await page.evaluate(()=>window.smp.call('state'));
- const setting=Math.min(6,before.value.budget.max);await page.evaluate(value=>window.smp.call('memory',value),setting);
+ const setting=Math.min(5127,before.value.budget.max*1024-1);
  await page.locator('[data-tab=settings]').click();await page.locator('#theme').selectOption('dark');
  await page.locator('#enhanced-edition').click();
  await page.waitForFunction(()=>document.querySelector('#enhanced-edition')?.getAttribute('aria-pressed')==='true');
+ await page.locator('#memory-value').fill(String(setting));await page.locator('#memory-value').press('Enter');
+ await page.waitForFunction(async (expected)=>(await window.smp.call('state')).value.memoryMb===expected,setting);
  await page.locator('#game-width').fill('1600');await page.locator('#game-height').fill('900');await page.locator('#jvm-args').fill('-XX:MaxGCPauseMillis=100');await page.locator('#fullscreen').check();await page.locator('#game-settings button').click();await page.getByText('Параметры игры сохранены.').waitFor();
  await page.locator('#dismiss-notice').click();await page.locator('#settings').evaluate(el=>el.scrollTop=0);await page.mouse.move(650,70);await page.screenshot({animations:'disabled',path:'.local/ui-settings-dark.png'});
  await page.locator('#theme').selectOption('light');await page.mouse.move(650,70);await page.waitForTimeout(350);await page.screenshot({animations:'disabled',path:'.local/ui-settings-light.png'});
@@ -96,7 +108,7 @@ try{
  await page.locator('#server-host').fill('10.99.52.8');await page.locator('#host-form button').click();await page.getByText('Адрес сохранён.').waitFor();
  assert.deepEqual(pageErrors,[]);
  await app.close();app=await electron.launch(options);const second=await app.firstWindow();await second.waitForSelector('#play');
- assert.equal(await second.locator('html').getAttribute('data-theme'),'dark');const after=await second.evaluate(()=>window.smp.call('state'));assert.equal(after.value.account.uuid,before.value.account.uuid);assert.equal(after.value.memory,setting);
+ assert.equal(await second.locator('html').getAttribute('data-theme'),'dark');const after=await second.evaluate(()=>window.smp.call('state'));assert.equal(after.value.account.uuid,before.value.account.uuid);assert.equal(after.value.memoryMb,setting);
  assert.equal(after.value.preferences.width,1600);assert.equal(after.value.preferences.height,900);assert.equal(after.value.preferences.fullscreen,true);assert.equal(after.value.preferences.jvmArgs,'-XX:MaxGCPauseMillis=100');
  assert.equal(after.value.logging,true);
  const logged=await (await import('node:fs/promises')).readFile(path.join(data,'launcher-logs','launcher.log'),'utf8');assert.match(logged,/Ошибка операции host/);for(const secret of [email,password,newPassword,name])assert.ok(!logged.includes(secret));
@@ -111,5 +123,5 @@ try{
  await manual.locator('[data-tab=settings]').click();await manual.locator('#auto-login').check();
  await manual.waitForFunction(async()=>(await window.smp.call('state')).value.preferences.autoLogin);
  await app.close();app=await electron.launch(options);const unsaved=await app.firstWindow();await unsaved.locator('#auth-form').waitFor();assert.equal(await unsaved.locator('#app-shell').isVisible(),false);
- const report={autoLoginCanBeDisabled:true,rememberOptOutHonored:true,connectionErrorAndRetry:true,mandatoryLogin:true,invalidLoginBlocked:true,logoutLocksShell:true,gamePreferencesRestored:true,twoThemes:true,graphicsSelection:true,staleLockRepaired:true,cacheCleared:true,loggingRestored:true,updateOffer:true,updateDownload:true,tamperedInstallerBlocked:true,registration:true,testMailCallback:true,passwordRecovery:true,darkThemeRestored:true,login:true,emailVerification:true,noFactionRequired:true,missingPackBlocked:true,nodeIsolation:true,sessionRestoredAfterRestart:true,settingsRestoredAfterRestart:true,noApplicationMenu:true,simplifiedNavigation:true,packPickerAndPersistence:true,developerHostValidatedAndSaved:true,noRendererErrors:true};await writeFile('docs/research/ui-smoke-result.json',JSON.stringify(report,null,2));console.log(report);
+ const report={skinHeadPreview:true,exactMemoryMb:true,autoLoginCanBeDisabled:true,rememberOptOutHonored:true,connectionErrorAndRetry:true,mandatoryLogin:true,invalidLoginBlocked:true,logoutLocksShell:true,gamePreferencesRestored:true,twoThemes:true,graphicsSelection:true,staleLockRepaired:true,cacheCleared:true,loggingRestored:true,updateOffer:true,updateDownload:true,tamperedInstallerBlocked:true,registration:true,testMailCallback:true,passwordRecovery:true,darkThemeRestored:true,login:true,emailVerification:true,noFactionRequired:true,missingPackBlocked:true,nodeIsolation:true,sessionRestoredAfterRestart:true,settingsRestoredAfterRestart:true,noApplicationMenu:true,simplifiedNavigation:true,packPickerAndPersistence:true,developerHostValidatedAndSaved:true,noRendererErrors:true};await writeFile('docs/research/ui-smoke-result.json',JSON.stringify(report,null,2));console.log(report);
 }finally{await app.close();await api.close();await db.close();}

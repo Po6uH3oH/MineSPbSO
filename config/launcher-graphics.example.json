@@ -1,5 +1,8 @@
 {
   "mods": [],
+  "shaderPack": "shaderpacks/ComplementaryUnbound_r5.9.3.zip",
   "basicDistance": 6,
-  "enhancedDistance": 12
+  "enhancedDistance": 12,
+  "basicLodRadius": 16,
+  "enhancedLodRadius": 48
 }
