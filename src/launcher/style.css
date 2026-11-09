@@ -4,11 +4,6 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "Ithaca";
-  src: url("assets/Ithaca.ttf") format("truetype");
-  font-display: swap;
-}
-@font-face {
   font-family: "Minecraft Ten";
   src: url("assets/minecraft-ten-font-cyrillic.ttf") format("truetype");
   font-display: swap;
@@ -23,29 +18,32 @@ body{margin:0;background:var(--bg);color:var(--text);font-size:14px;line-height:
 .memory-track{position:relative;padding-bottom:5px}.memory-track input[type=range]{appearance:none;background:transparent;height:20px}.memory-track input::-webkit-slider-runnable-track{height:5px;border-radius:5px;background:linear-gradient(to right,var(--accent) var(--memory-fill,15%),var(--raised) var(--memory-fill,15%))}.memory-track input::-webkit-slider-thumb{appearance:none;width:15px;height:15px;border-radius:50%;background:var(--blue);margin-top:-5px;box-shadow:0 0 0 4px #209aef14}.memory-track input:focus-visible{outline:2px solid var(--blue);outline-offset:3px}#memory-marker{position:absolute;height:7px;width:1px;background:var(--blue);bottom:1px;left:var(--memory-recommendation,15%);pointer-events:none}
 
 
-body { font-size: 18px; }
-button { font-family: Ithaca, Console, sans-serif; font-size: 19px; line-height: 1.15; font-weight: normal; }
-label, input, select, textarea, .inline-form, .toggle-row, .check { font-size: 17px; }
+body { font-size: 20px; font-synthesis: none; }
+button { font-family: Console, sans-serif; font-size: 22px; line-height: 1.25; font-weight: normal; }
+label, input, select, textarea, .inline-form, .toggle-row, .check { font-size: 20px; }
 .wordmark, .brand span { font-family: "Minecraft Ten", Console, sans-serif; font-weight: 400; letter-spacing: 0; }
 .wordmark { margin: 0 0 30px; font-size: 48px; }
 .wordmark span { font-weight: 400; }
-.brand span { font-size: 17px; }
+.brand span { font-size: 20px; }
 .auth-bottom { justify-content: flex-end; }
 .auth-content { padding: 12px 0 28px; }
-.auth-footer, #auth-form .check, #auth-form .text-button, .auth-back, .auth-bottom button { font-size: 16px; }
+.auth-footer, #auth-form .check, #auth-form .text-button, .auth-back, .auth-bottom button { font-size: 18px; }
 #auth-form > label { margin-bottom: 13px; }
 #auth-form .check { margin: 16px 0; }
-.auth-submit, .large { font-size: 24px; }
-#page-caption { color: var(--text); font-size: 29px; line-height: 1; }
+.auth-submit, .large { font-size: 28px; }
+#page-caption { color: var(--text); font-size: 32px; line-height: 1; }
 #identity { font-family: Console, sans-serif; font-size: 20px; font-weight: normal; }
 h2 { font-size: 24px; font-weight: normal; }
-.hero { margin-top: auto; }
+.hero { margin-top: 0; max-width: 720px; }
+.hero h1 { font-size: 44px; font-weight: 400; letter-spacing: 0; line-height: 1.15; margin: 0 0 20px; }
+.hero-description { max-width: 650px; font-size: 22px; line-height: 1.4; color: var(--text); margin-bottom: 28px; }
 .home-bottom { margin-top: 28px; }
-.server-card .eyebrow, .edition-card .eyebrow { font-size: 20px; letter-spacing: 0; color: var(--text); }
-.server-card p, .edition-card strong { font-size: 18px; }
-.players > span { font-size: 15px; font-weight: bold; }
-.edition-card button, .map-button, .button-stack button { font-size: 18px; }
-.hint, #stage, #pack-source, #transfer-label, small, .toggle-row small, .edition-options span { font-size: 15px; }
+.server-card .eyebrow, .edition-card .eyebrow { font-size: 24px; letter-spacing: 0; color: var(--text); }
+.server-card p, .edition-card strong { font-size: 20px; }
+.players > span { font-size: 18px; font-weight: 400; }
+.players strong { font-size: 28px; font-weight: 400; }
+.edition-card button, .map-button, .button-stack button { font-size: 22px; }
+.hint, #stage, #pack-source, #transfer-label, small, .toggle-row small, .edition-options span { font-size: 18px; }
 .edition-options strong { font-size: 20px; font-weight: normal; }
 .profile-card h2 { margin: 0; }
 #skin-head { width: 48px; height: 48px; image-rendering: pixelated; border-radius: 4px; }
@@ -53,8 +51,8 @@ select { appearance: none; padding-right: 36px; background-image: linear-gradien
 #developers .toggle-row { margin: 0 0 18px; min-height: 32px; }
 .memory-number { display: flex; gap: 8px; align-items: center; }
 .memory-number input { width: 92px; padding: 6px 8px; margin: 0; text-align: right; color: var(--blue); }
-.range-labels { font-size: 14px; }
-#auth-error, #notice, .error-details pre, #step-info { font-size: 16px; }
+.range-labels { font-size: 16px; }
+#auth-error, #notice, .error-details pre, #step-info { font-size: 18px; }
 #connection-error { user-select: text; }
 @media (max-height: 720px) {
   .wordmark { font-size: 39px; margin-bottom: 14px; }
@@ -63,3 +61,15 @@ select { appearance: none; padding-right: 36px; background-image: linear-gradien
 }
 
 .window-actions button { font-family: "Segoe UI", sans-serif; font-size: 21px; font-weight: 400; }
+
+/* Keep static glyphs on their original pixel grid after transitions. */
+.tab { animation: none; }
+summary, #network-results, #update-offer, #update-offer button, .tooltip { font-size: 18px; }
+.server-card .eyebrow, .edition-card .eyebrow, .primary, .server-card p { font-weight: 400; }
+
+.hero-description, .server-card p, .edition-card strong {
+  color: var(--muted);
+}
+.sidebar:hover, .sidebar:has(:focus-visible) { width: 260px; }
+.brand { width: 260px; }
+.sidebar nav button { width: 238px; }

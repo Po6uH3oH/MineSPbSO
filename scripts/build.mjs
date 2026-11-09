@@ -1,7 +1,14 @@
 import {build} from 'esbuild';
-import {mkdir,copyFile,cp} from 'node:fs/promises';
+import {mkdir,copyFile,cp,readdir,unlink} from 'node:fs/promises';
 await mkdir('dist/app',{recursive:true});
 await copyFile('build/icon.png','dist/app/icon.png');
+const sourceAssets = new Set(await readdir('src/launcher/assets'));
+for (const entry of await readdir('dist/app/assets',{withFileTypes:true}).catch(error => {
+  if (error.code === 'ENOENT') return [];
+  throw error;
+})) {
+  if (entry.isFile() && !sourceAssets.has(entry.name)) await unlink('dist/app/assets/'+entry.name);
+}
 await cp('src/launcher/assets','dist/app/assets',{recursive:true});
 await build({entryPoints:['src/launcher/main.ts'],outfile:'dist/app/main.cjs',bundle:true,platform:'node',format:'cjs',target:'node22',external:['electron']});
 await build({entryPoints:['src/launcher/preload.ts'],outfile:'dist/app/preload.cjs',bundle:true,platform:'node',format:'cjs',external:['electron']});

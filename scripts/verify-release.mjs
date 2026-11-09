@@ -10,7 +10,7 @@ const appRequire=createRequire(builderRequire.resolve('app-builder-lib'));
 const {extractFile,listPackage}=appRequire('@electron/asar');
 const resources=path.join(path.dirname(file),'win-unpacked','resources');
 const asar=path.join(resources,'app.asar');
-const assets = ['aurora.jpg','mountains.jpg','FONT-LICENSES.txt','Classic-Console-Neue-Regular.ttf','Ithaca.ttf','minecraft-ten-font-cyrillic.ttf'].map(name => 'assets/' + name);
+const assets = ['aurora.jpg','mountains.jpg','FONT-LICENSES.txt','Classic-Console-Neue-Regular.ttf','minecraft-ten-font-cyrillic.ttf'].map(name => 'assets/' + name);
 const expected = [...assets,'community-gate-0.2.0.jar','icon.png','index.html','main.cjs','package.json','preload.cjs','renderer.js','style.css'];
 assert.deepEqual(listPackage(asar).map(p=>p.slice(1).split(path.sep).join('/')).sort(),['assets',...expected].sort());
 for(const name of expected){

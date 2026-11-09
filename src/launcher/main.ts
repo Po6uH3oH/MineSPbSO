@@ -74,7 +74,7 @@ async function renew(){if(!refresh)throw new Error('Войдите в аккау
 async function authenticated(route:string,body?:unknown){try{return await request(route,body,access);}catch(e:any){if(e.status!==401)throw e;await renew();return request(route,body,access);}}
 try{if(preferences.autoLogin&&safeStorage.isEncryptionAvailable()){refresh=safeStorage.decryptString(await readFile(tokenPath));remember=true;await renew();}}catch(e:any){if(e.code!=='ENOENT')sessionError={message:e.message,status:e.status,detail:e.detail};access='';refresh='';if(e.status===401)await unlink(tokenPath).catch(()=>{});}
 let gameProcess:Awaited<ReturnType<typeof launchGame>>|undefined;
-win=new BrowserWindow({show:process.env.SMP_TEST_HEADLESS!=='1',width:1100,height:760,minWidth:900,minHeight:680,frame:false,backgroundColor:'#101b2c',title:config.name,icon:path.join(__dirname,'icon.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+win=new BrowserWindow({show:process.env.SMP_TEST_HEADLESS!=='1',width:1100,height:760,resizable:false,maximizable:false,fullscreenable:false,frame:false,backgroundColor:'#101b2c',title:config.name,icon:path.join(__dirname,'icon.png'),webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
 win.webContents.setWindowOpenHandler(()=>({action:'deny'}));win.webContents.on('will-navigate',e=>e.preventDefault());
 app.on('second-instance',()=>{if(win.isMinimized())win.restore();win.focus();});
 win.on('close',e=>{if(busy){e.preventDefault();status('Игра или установка ещё работает. Закройте игру перед выходом из лаунчера.');}});
