@@ -35,6 +35,8 @@ public final class Gate {
     static final ConfigurationTask.Type TASK = new ConfigurationTask.Type(ResourceLocation.fromNamespaceAndPath("community_gate", "account"));
     static final HttpClient HTTP = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5)).followRedirects(HttpClient.Redirect.NEVER).build();
     static final Map<ServerConfigurationPacketListenerImpl, String> PENDING = new ConcurrentHashMap<>();
+    // Key by the authenticated connection, not UUID: parallel/rejected logins cannot steal a profile.
+    static final Map<net.minecraft.network.Connection, String> SQUADS = new ConcurrentHashMap<>();
     static final KitAdapter KITS = new VanillaKitAdapter();
     public Gate(IEventBus bus) {
         bus.addListener(Gate::payloads);
@@ -42,6 +44,7 @@ public final class Gate {
         NeoForge.EVENT_BUS.addListener(Gate::starting);
         AccountWhitelist.register();
         NeoForge.EVENT_BUS.addListener(Gate::joined);
+        NeoForge.EVENT_BUS.addListener(Gate::cloned);
     }
     static void starting(ServerStartingEvent event) {
         if (!event.getServer().isDedicatedServer()) return;
@@ -50,8 +53,24 @@ public final class Gate {
     }
     static void joined(PlayerEvent.PlayerLoggedInEvent event) {
         if(!(event.getEntity() instanceof ServerPlayer player))return;
+        String squad = SQUADS.remove(player.connection.getConnection());
+        var data = player.getPersistentData();
+        data.remove("minespbso_squad_name");
+        data.remove("minespbso_profile_verified");
+        if (squad != null) {
+            data.putString("minespbso_squad_name", squad);
+            data.putBoolean("minespbso_profile_verified", true);
+        }
+        player.refreshDisplayName();
+        player.refreshTabListName();
         try{var result=KITS.grant(player);if(result==KitAdapter.Result.DELIVERED)player.sendSystemMessage(Component.literal("Стартовый набор выдан."));else if(result==KitAdapter.Result.NEEDS_REVIEW)player.sendSystemMessage(Component.literal("Выдача набора ранее прервалась. Обратитесь к администратору."));else if(result==KitAdapter.Result.INVENTORY_FULL)player.sendSystemMessage(Component.literal("Освободите место в инвентаре и переподключитесь для получения набора."));}
         catch(Exception ex){player.sendSystemMessage(Component.literal("Набор не подтверждён. Обратитесь к администратору."));}
+    }
+    static void cloned(PlayerEvent.Clone event) {
+        var old = event.getOriginal().getPersistentData();
+        var data = event.getEntity().getPersistentData();
+        data.putBoolean("minespbso_profile_verified", old.getBoolean("minespbso_profile_verified"));
+        data.putString("minespbso_squad_name", old.getString("minespbso_squad_name"));
     }
     static void payloads(RegisterPayloadHandlersEvent event) {
         var r = event.registrar("2"); // Required: never mark optional.
@@ -125,6 +144,11 @@ public final class Gate {
         JsonObject body = new JsonObject();body.addProperty("challenge",payload.challenge());body.addProperty("ticket",payload.ticket());body.addProperty("nickname",profile.getName());body.addProperty("uuid",profile.getId().toString());
         serverPost("/server/consume",body).thenAccept(r -> context.enqueueWork(() -> {
             if (!profile.getName().equals(r.get("nickname").getAsString()) || !profile.getId().toString().equals(r.get("uuid").getAsString())) { context.disconnect(Component.literal("Профиль не совпадает с аккаунтом.")); return; }
+            if (!listener.getConnection().isConnected()) return;
+            String squad = SquadName.validate(r.has("squadName") ? r.get("squadName").getAsString() : "");
+            var connection = listener.getConnection();
+            SQUADS.put(connection, squad);
+            CompletableFuture.delayedExecutor(65, TimeUnit.SECONDS).execute(() -> SQUADS.remove(connection, squad));
             context.finishCurrentTask(TASK);
         })).exceptionally(ex -> { context.disconnect(Component.literal("Вход отклонён или сервис недоступен. Повторите вход через лаунчер.")); return null; });
     }
@@ -145,3 +169,4 @@ public final class Gate {
         public Type<Proof> type() { return TYPE; }
     }
 }
+
