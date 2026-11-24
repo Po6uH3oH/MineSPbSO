@@ -5,6 +5,7 @@ import argon2 from 'argon2';
 import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { PNG } from 'pngjs';
 import { z } from 'zod';
+import { squadName } from '../shared/squad.js';
 import type { DB } from './db.js';
 import { digest, secret, offlineUuid } from '../shared/identity.js';
 
@@ -15,7 +16,7 @@ export interface ServiceConfig {
 const credentials=z.object({email:z.email().max(254).transform(v=>v.trim().toLowerCase()),password:z.string().min(8).max(128)});
 const proof=z.object({challenge:z.string().min(32).max(100),ticket:z.string().min(32).max(100)});
 const error=(statusCode:number,message:string)=>Object.assign(new Error(message),{statusCode});
-const publicAccount=(a:any)=>({id:a.id,nickname:a.nickname,uuid:a.game_uuid,verified:a.verified,skinModel:a.skin_model,skinHash:a.skin_hash});
+const publicAccount=(a:any)=>({id:a.id,nickname:a.nickname,uuid:a.game_uuid,verified:a.verified,skinModel:a.skin_model,skinHash:a.skin_hash,squadName:a.squad_name??''});
 export async function createService(c:ServiceConfig) {
  const app=Fastify({logger:false,bodyLimit:128*1024,trustProxy:false});
  await app.register(rateLimit,{max:100,timeWindow:'1 minute'});
@@ -92,6 +93,15 @@ export async function createService(c:ServiceConfig) {
  app.post('/auth/verify',async q=>{const {token}=z.object({token:z.string().max(100)}).parse(q.body);await useEmail(token,'verify',async(tx,id)=>{await tx.query('UPDATE accounts SET verified=true WHERE id=$1',[id]);});return {ok:true};});
  app.post('/auth/reset',async q=>{const v=z.object({token:z.string().max(100),password:z.string().min(8).max(128)}).parse(q.body);const h=await argon2.hash(v.password,{type:argon2.argon2id,memoryCost:65536,timeCost:3,parallelism:1});await useEmail(v.token,'reset',async(tx,id)=>{await tx.query('UPDATE accounts SET password_hash=$1 WHERE id=$2',[h,id]);await tx.query('DELETE FROM sessions WHERE account_id=$1',[id]);await tx.query('DELETE FROM email_tokens WHERE account_id=$1 AND purpose=$2',[id,'reset']);});return {ok:true};});
  app.get('/me',async q=>publicAccount(await account(q)));
+ app.post('/me/profile',async q=>{
+  const a=await account(q,true);
+  const v=z.object({squadName:z.string().max(128)}).strict().parse(q.body);
+  let name:string;try{name=squadName(v.squadName);}catch(e){throw error(400,(e as Error).message);}
+  await limited('profile:'+a.id,10,60);
+  const {rows}=await c.db.query('UPDATE accounts SET squad_name=$1 WHERE id=$2 AND NOT banned RETURNING *',[name,a.id]);
+  if(!rows[0])throw error(403,'Аккаунт недоступен');
+  return publicAccount(rows[0]);
+ });
  app.post('/me/skin',async q=>{
   const a=await account(q,true);const file=await q.file();if(!file)throw error(400,'Выберите PNG');const bytes=await file.toBuffer();if(file.file.truncated)throw error(413,'Скин больше 64 КБ');
   if(bytes.length<24||!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||bytes.readUInt32BE(16)!==64||![32,64].includes(bytes.readUInt32BE(20)))throw error(400,'Требуется PNG 64×64 или 64×32');
@@ -112,3 +122,4 @@ export async function createService(c:ServiceConfig) {
  app.post('/server/consume',async q=>{server(q);const v=proof.extend({nickname:z.string(),uuid:z.uuid()}).parse(q.body);const {rows}=await c.db.query(`UPDATE challenges c SET consumed=true WHERE id=$1 AND ticket_hash=$2 AND nickname=$3 AND game_uuid=$4 AND server_id=$5 AND expires>now() AND NOT consumed AND account_id IN (SELECT id FROM accounts WHERE verified AND NOT pending AND NOT banned) AND EXISTS (SELECT 1 FROM sessions s WHERE s.id=c.ticket_session_id AND s.account_id=c.account_id AND s.expires>now()) RETURNING account_id`,[v.challenge,digest(v.ticket),v.nickname,v.uuid,c.serverId]);if(!rows[0])throw error(403,'Проверка подключения отклонена');const a=(await c.db.query('SELECT * FROM accounts WHERE id=$1',[rows[0].account_id])).rows[0];return publicAccount(a);});
  return app;
 }
+

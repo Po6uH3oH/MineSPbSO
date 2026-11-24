@@ -42,6 +42,7 @@ async function refresh(){state=await call('state');$('identity').textContent=sta
  paintMemory();
  if (a) {
   $('profile-name').textContent = a.nickname;
+  if(document.activeElement!==$('squad-name'))input('squad-name').value=a.squadName??'';
   $('verify-box').hidden = a.verified;
  }
  void showSkinHead(a?.skinHash ?? '');
@@ -168,6 +169,7 @@ $('minimize').onclick=()=>void call('window','minimize');$('close').onclick=()=>
 $('auth-theme').onclick=()=>{themeSelect.value=document.documentElement.dataset.theme==='dark'?'light':'dark';localStorage.setItem('appearance',themeSelect.value);applyTheme();};
 document.querySelector<HTMLAnchorElement>('.brand')!.onclick=e=>{e.preventDefault();tab('home');};
 document.querySelector<HTMLButtonElement>('[data-open-settings]')!.onclick=()=>tab('settings');
+form('squad-form',async data=>{const a=await call('profile',{squadName:String(data.squadName??'')});input('squad-name').value=a.squadName;notice('Отряд сохранён. Переподключитесь к серверу, чтобы обновить тег.');});
 form('verify-form',data=>call('auth',{action:'verify',data}));
 for(const [id,channel,value] of [['select-pack','select-pack',undefined],['map','map',undefined],['folder','folder',undefined],['diagnostics','diagnostics',undefined],['release-page','update','releases'],['update-download','update','download'],['update-install','update','install']] as const)$(id).onclick=()=>void action(()=>call(channel,value));
 for(const [id,kind] of [['resend','resend'],['logout','logout'],['revoke','revoke-all']])$(id!).onclick=()=>void action(()=>call('auth',{action:kind,data:{}}));
@@ -213,3 +215,4 @@ input('memory-value').onchange = () => {
 input('memory-value').onkeydown = e => { if (e.key === 'Enter') input('memory-value').blur(); };
 for(const [id,key] of [['auto-login','autoLogin'],['auto-join','autoJoin']] as const)$(id).onchange=()=>void action(async()=>{try{await call('preferences',{...state.preferences,[key]:input(id).checked});}finally{await refresh();}});
 $('game-settings').onsubmit=e=>{e.preventDefault();void action(async()=>{await call('preferences',{...state.preferences,width:Number(input('game-width').value),height:Number(input('game-height').value),fullscreen:input('fullscreen').checked,jvmArgs:($('jvm-args') as HTMLTextAreaElement).value});notice('Параметры игры сохранены.');});};
+

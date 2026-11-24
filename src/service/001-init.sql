@@ -28,3 +28,6 @@ INSERT INTO reserved_nicks SELECT nickname_key FROM accounts ON CONFLICT DO NOTH
 ALTER TABLE accounts ADD COLUMN IF NOT EXISTS pending boolean NOT NULL DEFAULT false;
 CREATE TABLE IF NOT EXISTS registration_policy (id int PRIMARY KEY CHECK(id=1), mode text NOT NULL CHECK(mode IN ('open','review','closed')));
 INSERT INTO registration_policy VALUES(1,'open') ON CONFLICT DO NOTHING;
+
+
+ALTER TABLE accounts ADD COLUMN IF NOT EXISTS squad_name text NOT NULL DEFAULT '';

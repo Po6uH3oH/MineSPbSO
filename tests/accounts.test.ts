@@ -14,10 +14,15 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
   assert.equal((await call('/auth/register',{email:'other@example.org',nickname:'player_one',password:'12345678'})).status,409);
   assert.equal((await call('/server/whitelist',{})).status,401);
   assert.deepEqual((await call('/server/whitelist',{},serverKey)).players,[]);
+  assert.equal((await call('/me/profile',{squadName:'ССервО Панда'})).status,401);
   const verify=code();let login=await call('/auth/login',{email:'test@example.org',password:'12345678'});const original=login.account.uuid;
   assert.equal(original,offlineUuid('Player_One'));
+  assert.equal((await call('/me/profile',{squadName:'ССервО Панда'},login.access)).status,403);
   assert.equal((await call('/auth/verify',{token:verify})).status,200);
   assert.equal((await call('/auth/verify',{token:verify})).status,400);
+  assert.equal((await call('/me/profile',{squadName:'  ССервО  Панда  '},login.access)).squadName,'ССервО Панда');
+  assert.equal((await call('/me/profile',{squadName:'Другой',role:'admin'},login.access)).status,400);
+  assert.equal((await call('/me/profile',{squadName:'§cАдмин'},login.access)).status,400);
   const challenge=async(name='Player_One')=>call('/server/challenge',{nickname:name,uuid:offlineUuid(name)},serverKey);
   assert.equal((await call('/server/challenge',{nickname:'Player_One',uuid:original})).status,401);
   assert.equal((await challenge('Imposter')).status,403);
@@ -33,6 +38,7 @@ test('аккаунты, UUID, одноразовые коды, сессии и �
   assert.equal((await call('/server/consume',{...body,challenge:(await challenge()).challenge},serverKey)).status,403);
   assert.equal((await call('/server/consume',{challenge:ch,nickname:'Player_One',uuid:original},serverKey)).status,400);
   const race=await Promise.all([call('/server/consume',body,serverKey),call('/server/consume',body,serverKey)]);assert.deepEqual(race.map(r=>r.status).sort(),[200,403]);
+  assert.equal(race.find(r=>r.status===200).squadName,'ССервО Панда');
   assert.equal((await call('/join/ticket',{challenge:ch},login.access)).status,403);
   const expired=(await challenge()).challenge;await db.query("UPDATE challenges SET expires=now()-interval '1 second' WHERE id=$1",[expired]);
   assert.equal((await call('/join/ticket',{challenge:expired},login.access)).status,403);
@@ -61,3 +67,4 @@ test('UUID учитывает точный регистр и соответст�
 });
 
 test('login throttles repeated attempts',async()=>{const db=await database('pglite:');await migrate(db);const app=await createService({db,serverKey:'test',serverId:'test',publicUrl:'',sendMail:async()=>{}});try{for(let i=0;i<11;i++){const r=await app.inject({method:'POST',url:'/auth/login',payload:{email:'missing@example.org',password:'12345678'}});assert.equal(r.statusCode,i===10?429:401);}}finally{await app.close();await db.close();}});
+

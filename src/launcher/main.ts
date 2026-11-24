@@ -136,6 +136,7 @@ handler('host',async value=>{if(!tester||busy)throw new Error('Смена адр
 handler('remote-pack',async()=>{if(busy)throw new Error('Закройте игру');localPack='';await saveSettings();});
 handler('server-status',async()=>{try{return await protectedStatus();}catch{return null;}});
 handler('map',async()=>{if(tester){await shell.openExternal(serverTargets(host).map);return;}if(!config.blueMapUrl)throw new Error('Карта ещё не настроена');await shell.openExternal(trustedUrl(config.blueMapUrl));});
+handler('profile',async raw=>{const v=z.object({squadName:z.string().max(128)}).strict().parse(raw);return authenticated('/me/profile',v);});
 handler('skin-preview', async hash => {
  if (!access || typeof hash !== 'string' || !/^[a-f0-9]{64}$/.test(hash)) return null;
  const response = await fetchFile(config.apiUrl+'/csl/textures/'+hash, {signal:AbortSignal.timeout(5000)});
@@ -242,3 +243,4 @@ await win.loadFile(path.join(__dirname,'index.html'));
 app.on('window-all-closed',()=>app.quit());
 }
 void main().catch(e=>{dialog.showErrorBox('Не удалось открыть лаунчер',e instanceof Error?e.message:'Ошибка конфигурации');app.quit();});
+
